@@ -1,0 +1,29 @@
+spring:
+  profiles:
+    include: test
+  datasource:
+    username: root
+    password: juetu123456
+    url: jdbc:mysql://47.107.34.224:3308/library?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 5
+      connection-test-query: SELECT 1 FROM DUAL
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      max-lifetime: 60000
+      connection-timeout: 30000
+    tomcat:
+      time-between-eviction-runs-millis: 18800
+  redis:
+    port: 6379
+    host: 47.107.34.224
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.dominikyang.library.entity
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+logging:
+  config: log.xml
