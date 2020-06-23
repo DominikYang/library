@@ -18,7 +18,7 @@ public class BorrowInfo implements Serializable {
     /**
      * 订单号
      */
-    private Integer orderId;
+    private String orderId;
 
     /**
      * 图书id

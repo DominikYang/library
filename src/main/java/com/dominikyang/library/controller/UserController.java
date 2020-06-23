@@ -20,5 +20,4 @@ public class UserController {
         String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         return username + " " + hashPassword;
     }
-
 }

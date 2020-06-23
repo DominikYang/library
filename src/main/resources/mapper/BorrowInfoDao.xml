@@ -3,7 +3,7 @@
 <mapper namespace="com.dominikyang.library.dao.BorrowInfoDao">
   <resultMap id="BaseResultMap" type="com.dominikyang.library.entity.BorrowInfo">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
     <result column="book_id" jdbcType="INTEGER" property="bookId" />
     <result column="book_name" jdbcType="VARCHAR" property="bookName" />
     <result column="book_isbn" jdbcType="VARCHAR" property="bookIsbn" />
@@ -112,7 +112,7 @@
       book_isbn, user_id, user_code, 
       user_name, borrow_time, estimate_return_time, 
       real_return_time, `state`)
-    values (#{orderId,jdbcType=INTEGER}, #{bookId,jdbcType=INTEGER}, #{bookName,jdbcType=VARCHAR}, 
+    values (#{orderId,jdbcType=VARCHAR}, #{bookId,jdbcType=INTEGER}, #{bookName,jdbcType=VARCHAR}, 
       #{bookIsbn,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, #{userCode,jdbcType=INTEGER}, 
       #{userName,jdbcType=VARCHAR}, #{borrowTime,jdbcType=TIMESTAMP}, #{estimateReturnTime,jdbcType=TIMESTAMP}, 
       #{realReturnTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER})
@@ -156,7 +156,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="orderId != null">
-        #{orderId,jdbcType=INTEGER},
+        #{orderId,jdbcType=VARCHAR},
       </if>
       <if test="bookId != null">
         #{bookId,jdbcType=INTEGER},
@@ -203,7 +203,7 @@
         id = #{record.id,jdbcType=INTEGER},
       </if>
       <if test="record.orderId != null">
-        order_id = #{record.orderId,jdbcType=INTEGER},
+        order_id = #{record.orderId,jdbcType=VARCHAR},
       </if>
       <if test="record.bookId != null">
         book_id = #{record.bookId,jdbcType=INTEGER},
@@ -243,7 +243,7 @@
   <update id="updateByExample" parameterType="map">
     update borrow_info
     set id = #{record.id,jdbcType=INTEGER},
-      order_id = #{record.orderId,jdbcType=INTEGER},
+      order_id = #{record.orderId,jdbcType=VARCHAR},
       book_id = #{record.bookId,jdbcType=INTEGER},
       book_name = #{record.bookName,jdbcType=VARCHAR},
       book_isbn = #{record.bookIsbn,jdbcType=VARCHAR},
@@ -262,7 +262,7 @@
     update borrow_info
     <set>
       <if test="orderId != null">
-        order_id = #{orderId,jdbcType=INTEGER},
+        order_id = #{orderId,jdbcType=VARCHAR},
       </if>
       <if test="bookId != null">
         book_id = #{bookId,jdbcType=INTEGER},
@@ -299,7 +299,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.dominikyang.library.entity.BorrowInfo">
     update borrow_info
-    set order_id = #{orderId,jdbcType=INTEGER},
+    set order_id = #{orderId,jdbcType=VARCHAR},
       book_id = #{bookId,jdbcType=INTEGER},
       book_name = #{bookName,jdbcType=VARCHAR},
       book_isbn = #{bookIsbn,jdbcType=VARCHAR},
