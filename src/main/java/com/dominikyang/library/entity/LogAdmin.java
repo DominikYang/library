@@ -5,70 +5,40 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * borrow_info
+ * log_admin
  * @author 
  */
 @Data
 public class LogAdmin implements Serializable {
     /**
-     * id，主键
+     * id
      */
     private Integer id;
 
     /**
-     * 订单号
+     * 执行操作的用户id
      */
-    private Integer orderId;
+    private Integer operateUserId;
 
     /**
-     * 图书id
+     * 操作代码
      */
-    private Integer bookId;
+    private String operateCode;
 
     /**
-     * 图书名称
+     * 操作名称
      */
-    private String bookName;
+    private String operateName;
 
     /**
-     * 图书isbn
+     * 详细信息
      */
-    private String bookIsbn;
+    private String details;
 
     /**
-     * 借阅者id
+     * 时间
      */
-    private Integer userId;
-
-    /**
-     * 借阅者工号
-     */
-    private Integer userCode;
-
-    /**
-     * 借阅者姓名
-     */
-    private String userName;
-
-    /**
-     * 借出时间
-     */
-    private Date borrowTime;
-
-    /**
-     * 预计归还时间
-     */
-    private Date estimateReturnTime;
-
-    /**
-     * 实际归还时间
-     */
-    private Date realReturnTime;
-
-    /**
-     * 状态
-     */
-    private Integer state;
+    private Date time;
 
     private static final long serialVersionUID = 1L;
 }

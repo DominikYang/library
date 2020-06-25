@@ -3,17 +3,10 @@
 <mapper namespace="com.dominikyang.library.dao.LogWarnDao">
   <resultMap id="BaseResultMap" type="com.dominikyang.library.entity.LogWarn">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="order_id" jdbcType="INTEGER" property="orderId" />
-    <result column="book_id" jdbcType="INTEGER" property="bookId" />
-    <result column="book_name" jdbcType="VARCHAR" property="bookName" />
-    <result column="book_isbn" jdbcType="VARCHAR" property="bookIsbn" />
-    <result column="user_id" jdbcType="INTEGER" property="userId" />
-    <result column="user_code" jdbcType="INTEGER" property="userCode" />
-    <result column="user_name" jdbcType="VARCHAR" property="userName" />
-    <result column="borrow_time" jdbcType="TIMESTAMP" property="borrowTime" />
-    <result column="estimate_return_time" jdbcType="TIMESTAMP" property="estimateReturnTime" />
-    <result column="real_return_time" jdbcType="TIMESTAMP" property="realReturnTime" />
-    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="warn_code" jdbcType="VARCHAR" property="warnCode" />
+    <result column="warn_name" jdbcType="VARCHAR" property="warnName" />
+    <result column="details" jdbcType="VARCHAR" property="details" />
+    <result column="time" jdbcType="TIMESTAMP" property="time" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -74,8 +67,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, order_id, book_id, book_name, book_isbn, user_id, user_code, user_name, borrow_time, 
-    estimate_return_time, real_return_time, `state`
+    id, warn_code, warn_name, details, `time`
   </sql>
   <select id="selectByExample" parameterType="com.dominikyang.library.entity.LogWarnExample" resultMap="BaseResultMap">
     select
@@ -83,7 +75,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from borrow_info
+    from log_warn
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -94,146 +86,79 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from borrow_info
+    from log_warn
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from borrow_info
+    delete from log_warn
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <delete id="deleteByExample" parameterType="com.dominikyang.library.entity.LogWarnExample">
-    delete from borrow_info
+    delete from log_warn
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.dominikyang.library.entity.LogWarn" useGeneratedKeys="true">
-    insert into borrow_info (order_id, book_id, book_name, 
-      book_isbn, user_id, user_code, 
-      user_name, borrow_time, estimate_return_time, 
-      real_return_time, `state`)
-    values (#{orderId,jdbcType=INTEGER}, #{bookId,jdbcType=INTEGER}, #{bookName,jdbcType=VARCHAR}, 
-      #{bookIsbn,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, #{userCode,jdbcType=INTEGER}, 
-      #{userName,jdbcType=VARCHAR}, #{borrowTime,jdbcType=TIMESTAMP}, #{estimateReturnTime,jdbcType=TIMESTAMP}, 
-      #{realReturnTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER})
+    insert into log_warn (warn_code, warn_name, details, 
+      `time`)
+    values (#{warnCode,jdbcType=VARCHAR}, #{warnName,jdbcType=VARCHAR}, #{details,jdbcType=VARCHAR}, 
+      #{time,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.dominikyang.library.entity.LogWarn" useGeneratedKeys="true">
-    insert into borrow_info
+    insert into log_warn
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="orderId != null">
-        order_id,
+      <if test="warnCode != null">
+        warn_code,
       </if>
-      <if test="bookId != null">
-        book_id,
+      <if test="warnName != null">
+        warn_name,
       </if>
-      <if test="bookName != null">
-        book_name,
+      <if test="details != null">
+        details,
       </if>
-      <if test="bookIsbn != null">
-        book_isbn,
-      </if>
-      <if test="userId != null">
-        user_id,
-      </if>
-      <if test="userCode != null">
-        user_code,
-      </if>
-      <if test="userName != null">
-        user_name,
-      </if>
-      <if test="borrowTime != null">
-        borrow_time,
-      </if>
-      <if test="estimateReturnTime != null">
-        estimate_return_time,
-      </if>
-      <if test="realReturnTime != null">
-        real_return_time,
-      </if>
-      <if test="state != null">
-        `state`,
+      <if test="time != null">
+        `time`,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="orderId != null">
-        #{orderId,jdbcType=INTEGER},
+      <if test="warnCode != null">
+        #{warnCode,jdbcType=VARCHAR},
       </if>
-      <if test="bookId != null">
-        #{bookId,jdbcType=INTEGER},
+      <if test="warnName != null">
+        #{warnName,jdbcType=VARCHAR},
       </if>
-      <if test="bookName != null">
-        #{bookName,jdbcType=VARCHAR},
+      <if test="details != null">
+        #{details,jdbcType=VARCHAR},
       </if>
-      <if test="bookIsbn != null">
-        #{bookIsbn,jdbcType=VARCHAR},
-      </if>
-      <if test="userId != null">
-        #{userId,jdbcType=INTEGER},
-      </if>
-      <if test="userCode != null">
-        #{userCode,jdbcType=INTEGER},
-      </if>
-      <if test="userName != null">
-        #{userName,jdbcType=VARCHAR},
-      </if>
-      <if test="borrowTime != null">
-        #{borrowTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="estimateReturnTime != null">
-        #{estimateReturnTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="realReturnTime != null">
-        #{realReturnTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="state != null">
-        #{state,jdbcType=INTEGER},
+      <if test="time != null">
+        #{time,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.dominikyang.library.entity.LogWarnExample" resultType="java.lang.Long">
-    select count(*) from borrow_info
+    select count(*) from log_warn
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update borrow_info
+    update log_warn
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.orderId != null">
-        order_id = #{record.orderId,jdbcType=INTEGER},
+      <if test="record.warnCode != null">
+        warn_code = #{record.warnCode,jdbcType=VARCHAR},
       </if>
-      <if test="record.bookId != null">
-        book_id = #{record.bookId,jdbcType=INTEGER},
+      <if test="record.warnName != null">
+        warn_name = #{record.warnName,jdbcType=VARCHAR},
       </if>
-      <if test="record.bookName != null">
-        book_name = #{record.bookName,jdbcType=VARCHAR},
+      <if test="record.details != null">
+        details = #{record.details,jdbcType=VARCHAR},
       </if>
-      <if test="record.bookIsbn != null">
-        book_isbn = #{record.bookIsbn,jdbcType=VARCHAR},
-      </if>
-      <if test="record.userId != null">
-        user_id = #{record.userId,jdbcType=INTEGER},
-      </if>
-      <if test="record.userCode != null">
-        user_code = #{record.userCode,jdbcType=INTEGER},
-      </if>
-      <if test="record.userName != null">
-        user_name = #{record.userName,jdbcType=VARCHAR},
-      </if>
-      <if test="record.borrowTime != null">
-        borrow_time = #{record.borrowTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.estimateReturnTime != null">
-        estimate_return_time = #{record.estimateReturnTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.realReturnTime != null">
-        real_return_time = #{record.realReturnTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.state != null">
-        `state` = #{record.state,jdbcType=INTEGER},
+      <if test="record.time != null">
+        `time` = #{record.time,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null">
@@ -241,75 +166,40 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update borrow_info
+    update log_warn
     set id = #{record.id,jdbcType=INTEGER},
-      order_id = #{record.orderId,jdbcType=INTEGER},
-      book_id = #{record.bookId,jdbcType=INTEGER},
-      book_name = #{record.bookName,jdbcType=VARCHAR},
-      book_isbn = #{record.bookIsbn,jdbcType=VARCHAR},
-      user_id = #{record.userId,jdbcType=INTEGER},
-      user_code = #{record.userCode,jdbcType=INTEGER},
-      user_name = #{record.userName,jdbcType=VARCHAR},
-      borrow_time = #{record.borrowTime,jdbcType=TIMESTAMP},
-      estimate_return_time = #{record.estimateReturnTime,jdbcType=TIMESTAMP},
-      real_return_time = #{record.realReturnTime,jdbcType=TIMESTAMP},
-      `state` = #{record.state,jdbcType=INTEGER}
+      warn_code = #{record.warnCode,jdbcType=VARCHAR},
+      warn_name = #{record.warnName,jdbcType=VARCHAR},
+      details = #{record.details,jdbcType=VARCHAR},
+      `time` = #{record.time,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.dominikyang.library.entity.LogWarn">
-    update borrow_info
+    update log_warn
     <set>
-      <if test="orderId != null">
-        order_id = #{orderId,jdbcType=INTEGER},
+      <if test="warnCode != null">
+        warn_code = #{warnCode,jdbcType=VARCHAR},
       </if>
-      <if test="bookId != null">
-        book_id = #{bookId,jdbcType=INTEGER},
+      <if test="warnName != null">
+        warn_name = #{warnName,jdbcType=VARCHAR},
       </if>
-      <if test="bookName != null">
-        book_name = #{bookName,jdbcType=VARCHAR},
+      <if test="details != null">
+        details = #{details,jdbcType=VARCHAR},
       </if>
-      <if test="bookIsbn != null">
-        book_isbn = #{bookIsbn,jdbcType=VARCHAR},
-      </if>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=INTEGER},
-      </if>
-      <if test="userCode != null">
-        user_code = #{userCode,jdbcType=INTEGER},
-      </if>
-      <if test="userName != null">
-        user_name = #{userName,jdbcType=VARCHAR},
-      </if>
-      <if test="borrowTime != null">
-        borrow_time = #{borrowTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="estimateReturnTime != null">
-        estimate_return_time = #{estimateReturnTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="realReturnTime != null">
-        real_return_time = #{realReturnTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="state != null">
-        `state` = #{state,jdbcType=INTEGER},
+      <if test="time != null">
+        `time` = #{time,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.dominikyang.library.entity.LogWarn">
-    update borrow_info
-    set order_id = #{orderId,jdbcType=INTEGER},
-      book_id = #{bookId,jdbcType=INTEGER},
-      book_name = #{bookName,jdbcType=VARCHAR},
-      book_isbn = #{bookIsbn,jdbcType=VARCHAR},
-      user_id = #{userId,jdbcType=INTEGER},
-      user_code = #{userCode,jdbcType=INTEGER},
-      user_name = #{userName,jdbcType=VARCHAR},
-      borrow_time = #{borrowTime,jdbcType=TIMESTAMP},
-      estimate_return_time = #{estimateReturnTime,jdbcType=TIMESTAMP},
-      real_return_time = #{realReturnTime,jdbcType=TIMESTAMP},
-      `state` = #{state,jdbcType=INTEGER}
+    update log_warn
+    set warn_code = #{warnCode,jdbcType=VARCHAR},
+      warn_name = #{warnName,jdbcType=VARCHAR},
+      details = #{details,jdbcType=VARCHAR},
+      `time` = #{time,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

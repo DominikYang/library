@@ -5,70 +5,35 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * borrow_info
+ * log_warn
  * @author 
  */
 @Data
 public class LogWarn implements Serializable {
     /**
-     * id，主键
+     * id
      */
     private Integer id;
 
     /**
-     * 订单号
+     * 异常代码
      */
-    private Integer orderId;
+    private String warnCode;
 
     /**
-     * 图书id
+     * 异常名称
      */
-    private Integer bookId;
+    private String warnName;
 
     /**
-     * 图书名称
+     * 具体日志
      */
-    private String bookName;
+    private String details;
 
     /**
-     * 图书isbn
+     * 时间
      */
-    private String bookIsbn;
-
-    /**
-     * 借阅者id
-     */
-    private Integer userId;
-
-    /**
-     * 借阅者工号
-     */
-    private Integer userCode;
-
-    /**
-     * 借阅者姓名
-     */
-    private String userName;
-
-    /**
-     * 借出时间
-     */
-    private Date borrowTime;
-
-    /**
-     * 预计归还时间
-     */
-    private Date estimateReturnTime;
-
-    /**
-     * 实际归还时间
-     */
-    private Date realReturnTime;
-
-    /**
-     * 状态
-     */
-    private Integer state;
+    private Date time;
 
     private static final long serialVersionUID = 1L;
 }

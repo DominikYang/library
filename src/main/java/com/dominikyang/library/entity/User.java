@@ -1,74 +1,63 @@
 package com.dominikyang.library.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
 /**
- * borrow_info
+ * user
  * @author 
  */
 @Data
 public class User implements Serializable {
     /**
-     * id，主键
+     * 用户id，主键
      */
     private Integer id;
 
     /**
-     * 订单号
+     * 用户账号
      */
-    private Integer orderId;
+    private String username;
 
     /**
-     * 图书id
+     * 用户编号，唯一索引
      */
-    private Integer bookId;
+    private Integer code;
 
     /**
-     * 图书名称
+     * 用户真实姓名
      */
-    private String bookName;
+    private String realName;
 
     /**
-     * 图书isbn
+     * 密码
      */
-    private String bookIsbn;
+    private String password;
 
     /**
-     * 借阅者id
+     * 所属院系
      */
-    private Integer userId;
+    private String department;
 
     /**
-     * 借阅者工号
+     * 年级
      */
-    private Integer userCode;
+    private Integer grade;
 
     /**
-     * 借阅者姓名
+     * 专业
      */
-    private String userName;
-
-    /**
-     * 借出时间
-     */
-    private Date borrowTime;
-
-    /**
-     * 预计归还时间
-     */
-    private Date estimateReturnTime;
-
-    /**
-     * 实际归还时间
-     */
-    private Date realReturnTime;
+    private String major;
 
     /**
      * 状态
      */
     private Integer state;
+
+    /**
+     * 角色id
+     */
+    private Integer role;
 
     private static final long serialVersionUID = 1L;
 }

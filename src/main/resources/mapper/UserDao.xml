@@ -3,17 +3,15 @@
 <mapper namespace="com.dominikyang.library.dao.UserDao">
   <resultMap id="BaseResultMap" type="com.dominikyang.library.entity.User">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="order_id" jdbcType="INTEGER" property="orderId" />
-    <result column="book_id" jdbcType="INTEGER" property="bookId" />
-    <result column="book_name" jdbcType="VARCHAR" property="bookName" />
-    <result column="book_isbn" jdbcType="VARCHAR" property="bookIsbn" />
-    <result column="user_id" jdbcType="INTEGER" property="userId" />
-    <result column="user_code" jdbcType="INTEGER" property="userCode" />
-    <result column="user_name" jdbcType="VARCHAR" property="userName" />
-    <result column="borrow_time" jdbcType="TIMESTAMP" property="borrowTime" />
-    <result column="estimate_return_time" jdbcType="TIMESTAMP" property="estimateReturnTime" />
-    <result column="real_return_time" jdbcType="TIMESTAMP" property="realReturnTime" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="code" jdbcType="INTEGER" property="code" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="department" jdbcType="VARCHAR" property="department" />
+    <result column="grade" jdbcType="INTEGER" property="grade" />
+    <result column="major" jdbcType="VARCHAR" property="major" />
     <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="role" jdbcType="INTEGER" property="role" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -74,8 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, order_id, book_id, book_name, book_isbn, user_id, user_code, user_name, borrow_time, 
-    estimate_return_time, real_return_time, `state`
+    id, username, code, real_name, `password`, department, grade, major, `state`, `role`
   </sql>
   <select id="selectByExample" parameterType="com.dominikyang.library.entity.UserExample" resultMap="BaseResultMap">
     select
@@ -83,7 +80,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from borrow_info
+    from user
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -94,146 +91,126 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from borrow_info
+    from user
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from borrow_info
+    delete from user
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <delete id="deleteByExample" parameterType="com.dominikyang.library.entity.UserExample">
-    delete from borrow_info
+    delete from user
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.dominikyang.library.entity.User" useGeneratedKeys="true">
-    insert into borrow_info (order_id, book_id, book_name, 
-      book_isbn, user_id, user_code, 
-      user_name, borrow_time, estimate_return_time, 
-      real_return_time, `state`)
-    values (#{orderId,jdbcType=INTEGER}, #{bookId,jdbcType=INTEGER}, #{bookName,jdbcType=VARCHAR}, 
-      #{bookIsbn,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, #{userCode,jdbcType=INTEGER}, 
-      #{userName,jdbcType=VARCHAR}, #{borrowTime,jdbcType=TIMESTAMP}, #{estimateReturnTime,jdbcType=TIMESTAMP}, 
-      #{realReturnTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER})
+    insert into user (username, code, real_name, 
+      `password`, department, grade, 
+      major, `state`, `role`)
+    values (#{username,jdbcType=VARCHAR}, #{code,jdbcType=INTEGER}, #{realName,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{department,jdbcType=VARCHAR}, #{grade,jdbcType=INTEGER}, 
+      #{major,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{role,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.dominikyang.library.entity.User" useGeneratedKeys="true">
-    insert into borrow_info
+    insert into user
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="orderId != null">
-        order_id,
+      <if test="username != null">
+        username,
       </if>
-      <if test="bookId != null">
-        book_id,
+      <if test="code != null">
+        code,
       </if>
-      <if test="bookName != null">
-        book_name,
+      <if test="realName != null">
+        real_name,
       </if>
-      <if test="bookIsbn != null">
-        book_isbn,
+      <if test="password != null">
+        `password`,
       </if>
-      <if test="userId != null">
-        user_id,
+      <if test="department != null">
+        department,
       </if>
-      <if test="userCode != null">
-        user_code,
+      <if test="grade != null">
+        grade,
       </if>
-      <if test="userName != null">
-        user_name,
-      </if>
-      <if test="borrowTime != null">
-        borrow_time,
-      </if>
-      <if test="estimateReturnTime != null">
-        estimate_return_time,
-      </if>
-      <if test="realReturnTime != null">
-        real_return_time,
+      <if test="major != null">
+        major,
       </if>
       <if test="state != null">
         `state`,
       </if>
+      <if test="role != null">
+        `role`,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="orderId != null">
-        #{orderId,jdbcType=INTEGER},
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
       </if>
-      <if test="bookId != null">
-        #{bookId,jdbcType=INTEGER},
+      <if test="code != null">
+        #{code,jdbcType=INTEGER},
       </if>
-      <if test="bookName != null">
-        #{bookName,jdbcType=VARCHAR},
+      <if test="realName != null">
+        #{realName,jdbcType=VARCHAR},
       </if>
-      <if test="bookIsbn != null">
-        #{bookIsbn,jdbcType=VARCHAR},
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
       </if>
-      <if test="userId != null">
-        #{userId,jdbcType=INTEGER},
+      <if test="department != null">
+        #{department,jdbcType=VARCHAR},
       </if>
-      <if test="userCode != null">
-        #{userCode,jdbcType=INTEGER},
+      <if test="grade != null">
+        #{grade,jdbcType=INTEGER},
       </if>
-      <if test="userName != null">
-        #{userName,jdbcType=VARCHAR},
-      </if>
-      <if test="borrowTime != null">
-        #{borrowTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="estimateReturnTime != null">
-        #{estimateReturnTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="realReturnTime != null">
-        #{realReturnTime,jdbcType=TIMESTAMP},
+      <if test="major != null">
+        #{major,jdbcType=VARCHAR},
       </if>
       <if test="state != null">
         #{state,jdbcType=INTEGER},
       </if>
+      <if test="role != null">
+        #{role,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.dominikyang.library.entity.UserExample" resultType="java.lang.Long">
-    select count(*) from borrow_info
+    select count(*) from user
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update borrow_info
+    update user
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.orderId != null">
-        order_id = #{record.orderId,jdbcType=INTEGER},
+      <if test="record.username != null">
+        username = #{record.username,jdbcType=VARCHAR},
       </if>
-      <if test="record.bookId != null">
-        book_id = #{record.bookId,jdbcType=INTEGER},
+      <if test="record.code != null">
+        code = #{record.code,jdbcType=INTEGER},
       </if>
-      <if test="record.bookName != null">
-        book_name = #{record.bookName,jdbcType=VARCHAR},
+      <if test="record.realName != null">
+        real_name = #{record.realName,jdbcType=VARCHAR},
       </if>
-      <if test="record.bookIsbn != null">
-        book_isbn = #{record.bookIsbn,jdbcType=VARCHAR},
+      <if test="record.password != null">
+        `password` = #{record.password,jdbcType=VARCHAR},
       </if>
-      <if test="record.userId != null">
-        user_id = #{record.userId,jdbcType=INTEGER},
+      <if test="record.department != null">
+        department = #{record.department,jdbcType=VARCHAR},
       </if>
-      <if test="record.userCode != null">
-        user_code = #{record.userCode,jdbcType=INTEGER},
+      <if test="record.grade != null">
+        grade = #{record.grade,jdbcType=INTEGER},
       </if>
-      <if test="record.userName != null">
-        user_name = #{record.userName,jdbcType=VARCHAR},
-      </if>
-      <if test="record.borrowTime != null">
-        borrow_time = #{record.borrowTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.estimateReturnTime != null">
-        estimate_return_time = #{record.estimateReturnTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.realReturnTime != null">
-        real_return_time = #{record.realReturnTime,jdbcType=TIMESTAMP},
+      <if test="record.major != null">
+        major = #{record.major,jdbcType=VARCHAR},
       </if>
       <if test="record.state != null">
         `state` = #{record.state,jdbcType=INTEGER},
+      </if>
+      <if test="record.role != null">
+        `role` = #{record.role,jdbcType=INTEGER},
       </if>
     </set>
     <if test="_parameter != null">
@@ -241,75 +218,65 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update borrow_info
+    update user
     set id = #{record.id,jdbcType=INTEGER},
-      order_id = #{record.orderId,jdbcType=INTEGER},
-      book_id = #{record.bookId,jdbcType=INTEGER},
-      book_name = #{record.bookName,jdbcType=VARCHAR},
-      book_isbn = #{record.bookIsbn,jdbcType=VARCHAR},
-      user_id = #{record.userId,jdbcType=INTEGER},
-      user_code = #{record.userCode,jdbcType=INTEGER},
-      user_name = #{record.userName,jdbcType=VARCHAR},
-      borrow_time = #{record.borrowTime,jdbcType=TIMESTAMP},
-      estimate_return_time = #{record.estimateReturnTime,jdbcType=TIMESTAMP},
-      real_return_time = #{record.realReturnTime,jdbcType=TIMESTAMP},
-      `state` = #{record.state,jdbcType=INTEGER}
+      username = #{record.username,jdbcType=VARCHAR},
+      code = #{record.code,jdbcType=INTEGER},
+      real_name = #{record.realName,jdbcType=VARCHAR},
+      `password` = #{record.password,jdbcType=VARCHAR},
+      department = #{record.department,jdbcType=VARCHAR},
+      grade = #{record.grade,jdbcType=INTEGER},
+      major = #{record.major,jdbcType=VARCHAR},
+      `state` = #{record.state,jdbcType=INTEGER},
+      `role` = #{record.role,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.dominikyang.library.entity.User">
-    update borrow_info
+    update user
     <set>
-      <if test="orderId != null">
-        order_id = #{orderId,jdbcType=INTEGER},
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
       </if>
-      <if test="bookId != null">
-        book_id = #{bookId,jdbcType=INTEGER},
+      <if test="code != null">
+        code = #{code,jdbcType=INTEGER},
       </if>
-      <if test="bookName != null">
-        book_name = #{bookName,jdbcType=VARCHAR},
+      <if test="realName != null">
+        real_name = #{realName,jdbcType=VARCHAR},
       </if>
-      <if test="bookIsbn != null">
-        book_isbn = #{bookIsbn,jdbcType=VARCHAR},
+      <if test="password != null">
+        `password` = #{password,jdbcType=VARCHAR},
       </if>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=INTEGER},
+      <if test="department != null">
+        department = #{department,jdbcType=VARCHAR},
       </if>
-      <if test="userCode != null">
-        user_code = #{userCode,jdbcType=INTEGER},
+      <if test="grade != null">
+        grade = #{grade,jdbcType=INTEGER},
       </if>
-      <if test="userName != null">
-        user_name = #{userName,jdbcType=VARCHAR},
-      </if>
-      <if test="borrowTime != null">
-        borrow_time = #{borrowTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="estimateReturnTime != null">
-        estimate_return_time = #{estimateReturnTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="realReturnTime != null">
-        real_return_time = #{realReturnTime,jdbcType=TIMESTAMP},
+      <if test="major != null">
+        major = #{major,jdbcType=VARCHAR},
       </if>
       <if test="state != null">
         `state` = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="role != null">
+        `role` = #{role,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.dominikyang.library.entity.User">
-    update borrow_info
-    set order_id = #{orderId,jdbcType=INTEGER},
-      book_id = #{bookId,jdbcType=INTEGER},
-      book_name = #{bookName,jdbcType=VARCHAR},
-      book_isbn = #{bookIsbn,jdbcType=VARCHAR},
-      user_id = #{userId,jdbcType=INTEGER},
-      user_code = #{userCode,jdbcType=INTEGER},
-      user_name = #{userName,jdbcType=VARCHAR},
-      borrow_time = #{borrowTime,jdbcType=TIMESTAMP},
-      estimate_return_time = #{estimateReturnTime,jdbcType=TIMESTAMP},
-      real_return_time = #{realReturnTime,jdbcType=TIMESTAMP},
-      `state` = #{state,jdbcType=INTEGER}
+    update user
+    set username = #{username,jdbcType=VARCHAR},
+      code = #{code,jdbcType=INTEGER},
+      real_name = #{realName,jdbcType=VARCHAR},
+      `password` = #{password,jdbcType=VARCHAR},
+      department = #{department,jdbcType=VARCHAR},
+      grade = #{grade,jdbcType=INTEGER},
+      major = #{major,jdbcType=VARCHAR},
+      `state` = #{state,jdbcType=INTEGER},
+      `role` = #{role,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
