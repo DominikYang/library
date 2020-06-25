@@ -1,6 +1,7 @@
 package com.dominikyang.library.service;
 
 import com.dominikyang.library.entity.BorrowInfo;
+import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.vo.LoginVO;
 
 import java.util.List;
@@ -11,9 +12,7 @@ import java.util.List;
  * 注释：null
  **/
 public interface UserService {
-    String login(LoginVO loginVO) ;
-
-    boolean logout();
+    String login(LoginVO loginVO) throws GlobalException;
 
     List<BorrowInfo> orderList(Integer userId) ;
 }
