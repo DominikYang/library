@@ -1,6 +1,7 @@
 package com.dominikyang.library.controller;
 
 import com.auth0.jwt.JWT;
+import com.dominikyang.library.entity.BorrowInfo;
 import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.result.BaseResult;
 import com.dominikyang.library.result.CodeMessage;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author Wei yuyaung
@@ -60,6 +62,17 @@ public class UserController {
             return BaseResult.success(null);
         }else{
             return BaseResult.fail(CodeMessage.LOGOUT_FAILE);
+        }
+    }
+
+    @GetMapping("order/list")
+    public BaseResult<List<BorrowInfo>> orderList(HttpServletRequest httpServletRequest){
+        Integer userId = Integer.valueOf(JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0));
+        List<BorrowInfo> borrowInfos = userService.orderList(userId);
+        if(borrowInfos.size()<1){
+            return BaseResult.success(null);
+        }else{
+            return BaseResult.success(borrowInfos);
         }
     }
 }

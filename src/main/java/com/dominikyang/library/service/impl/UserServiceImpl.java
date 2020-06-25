@@ -2,8 +2,10 @@ package com.dominikyang.library.service.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.dominikyang.library.dao.BorrowInfoDao;
 import com.dominikyang.library.dao.UserDao;
 import com.dominikyang.library.entity.BorrowInfo;
+import com.dominikyang.library.entity.BorrowInfoExample;
 import com.dominikyang.library.entity.User;
 import com.dominikyang.library.entity.UserExample;
 import com.dominikyang.library.exception.GlobalException;
@@ -24,6 +26,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao ;
+    @Autowired
+    private BorrowInfoDao borrowInfoDao ;
 
     @Override
     public String login(LoginVO loginVO) throws GlobalException {
@@ -45,7 +49,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<BorrowInfo> orderList(Integer userId) {
-        return null;
+        BorrowInfoExample example = new BorrowInfoExample();
+        example.createCriteria().andUserIdEqualTo(userId);
+        List<BorrowInfo> borrowInfos = borrowInfoDao.selectByExample(example);
+        if(borrowInfos.size()<1){
+            return null ;
+        }else{
+            return borrowInfos ;
+        }
     }
 
     public String getToken(User user) {
@@ -54,4 +65,5 @@ public class UserServiceImpl implements UserService {
                 .sign(Algorithm.HMAC256(user.getPassword()));
         return token;
     }
+
 }
