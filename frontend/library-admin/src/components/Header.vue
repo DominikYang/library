@@ -1,6 +1,6 @@
 <template>
     <div class="self-title">
-      <h1>图书借阅系统</h1>
+      <h1>管理系统</h1>
     </div>
 </template>
 
