@@ -15,8 +15,9 @@
             height="750"
             style="width: 100%">
             <el-table-column
-              prop="id"
-              label="操作id"
+              prop="date"
+              label="时间"
+              fixed
             >
             </el-table-column>
             <el-table-column
@@ -25,14 +26,23 @@
             >
             </el-table-column>
             <el-table-column
+              prop="operateCode"
+              label="代码"
+            >
+            </el-table-column>
+            <el-table-column
               prop="method"
               label="操作方法"
             >
             </el-table-column>
-            <el-table-column
-              prop="date"
-              label="操作时间"
-            >
+            <el-table-column fixed="right" label="详情" width="200">
+              <template slot-scope="scope">
+                <el-button
+                  size="mini"
+                  type="primary"
+                  @click="openEditForm(scope.$index, scope.row)">查看详情
+                </el-button>
+              </template>
             </el-table-column>
           </el-table>
         </el-card>
