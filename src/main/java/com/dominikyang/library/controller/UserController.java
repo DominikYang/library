@@ -27,15 +27,15 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
-    private UserService userService ;
+    private UserService userService;
 
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @PostMapping("add")
-    public String add(){
+    public String add() {
         String username = "username";
         String password = "password";
         String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt());
@@ -47,7 +47,7 @@ public class UserController {
         try {
             String login = userService.login(loginVO);
             String userId = JWT.decode(login).getAudience().get(0);
-            RedisUtils.set(userId,login,86400);
+            RedisUtils.set(userId, login, 86400);
             return BaseResult.success(login);
         } catch (GlobalException e) {
             return BaseResult.fail(e.getCodeMessage());
@@ -55,23 +55,23 @@ public class UserController {
     }
 
     @GetMapping("logout")
-    public BaseResult<String> logout(HttpServletRequest httpServletRequest){
+    public BaseResult<String> logout(HttpServletRequest httpServletRequest) {
         String userId = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
         boolean success = RedisUtils.del(userId);
-        if(success){
+        if (success) {
             return BaseResult.success(null);
-        }else{
+        } else {
             return BaseResult.fail(CodeMessage.LOGOUT_FAILE);
         }
     }
 
     @GetMapping("order/list")
-    public BaseResult<List<BorrowInfo>> orderList(HttpServletRequest httpServletRequest){
+    public BaseResult<List<BorrowInfo>> orderList(HttpServletRequest httpServletRequest) {
         Integer userId = Integer.valueOf(JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0));
         List<BorrowInfo> borrowInfos = userService.orderList(userId);
-        if(borrowInfos.size()<1){
+        if (borrowInfos.size() < 1) {
             return BaseResult.success(null);
-        }else{
+        } else {
             return BaseResult.success(borrowInfos);
         }
     }

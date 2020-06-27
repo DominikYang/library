@@ -25,23 +25,23 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
-    private UserDao userDao ;
+    private UserDao userDao;
     @Autowired
-    private BorrowInfoDao borrowInfoDao ;
+    private BorrowInfoDao borrowInfoDao;
 
     @Override
     public String login(LoginVO loginVO) throws GlobalException {
         UserExample example = new UserExample();
         example.createCriteria().andUsernameEqualTo(loginVO.getUsername());
         List<User> users = userDao.selectByExample(example);
-        if(users.size()<1){
+        if (users.size() < 1) {
             throw new GlobalException(CodeMessage.ERROR_USERNAME);
-        }else if(users.size()>1){
+        } else if (users.size() > 1) {
             throw new GlobalException(CodeMessage.DATABSE_ERROR);
-        }else{
-            if(users.get(0).getPassword().equals(loginVO.getPassword())){
-                return getToken(users.get(0)) ;
-            }else{
+        } else {
+            if (users.get(0).getPassword().equals(loginVO.getPassword())) {
+                return getToken(users.get(0));
+            } else {
                 throw new GlobalException(CodeMessage.ERROR_PASSWORD);
             }
         }
@@ -52,10 +52,10 @@ public class UserServiceImpl implements UserService {
         BorrowInfoExample example = new BorrowInfoExample();
         example.createCriteria().andUserIdEqualTo(userId);
         List<BorrowInfo> borrowInfos = borrowInfoDao.selectByExample(example);
-        if(borrowInfos.size()<1){
-            return null ;
-        }else{
-            return borrowInfos ;
+        if (borrowInfos.size() < 1) {
+            return null;
+        } else {
+            return borrowInfos;
         }
     }
 
