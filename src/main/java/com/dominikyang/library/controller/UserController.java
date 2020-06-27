@@ -5,6 +5,7 @@ import com.dominikyang.library.entity.BorrowInfo;
 import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.result.BaseResult;
 import com.dominikyang.library.result.CodeMessage;
+import com.dominikyang.library.service.OrderService;
 import com.dominikyang.library.service.UserService;
 import com.dominikyang.library.utils.RedisUtils;
 import com.dominikyang.library.vo.LoginVO;
@@ -26,16 +27,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    //token存在时间
+    private static long tokenTimeOut = 86400 ;
 
-    private UserService userService;
+    private UserService userService ;
+    private OrderService orderService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService,OrderService orderService){
         this.userService = userService;
+        this.orderService = orderService;
     }
 
     @PostMapping("add")
-    public String add() {
+    public String add(){
         String username = "username";
         String password = "password";
         String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt());
@@ -47,7 +52,7 @@ public class UserController {
         try {
             String login = userService.login(loginVO);
             String userId = JWT.decode(login).getAudience().get(0);
-            RedisUtils.set(userId, login, 86400);
+            RedisUtils.set(userId,login,tokenTimeOut);
             return BaseResult.success(login);
         } catch (GlobalException e) {
             return BaseResult.fail(e.getCodeMessage());
@@ -55,23 +60,23 @@ public class UserController {
     }
 
     @GetMapping("logout")
-    public BaseResult<String> logout(HttpServletRequest httpServletRequest) {
+    public BaseResult<String> logout(HttpServletRequest httpServletRequest){
         String userId = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
         boolean success = RedisUtils.del(userId);
-        if (success) {
+        if(success){
             return BaseResult.success(null);
-        } else {
+        }else{
             return BaseResult.fail(CodeMessage.LOGOUT_FAILE);
         }
     }
 
     @GetMapping("order/list")
-    public BaseResult<List<BorrowInfo>> orderList(HttpServletRequest httpServletRequest) {
+    public BaseResult<List<BorrowInfo>> orderList(HttpServletRequest httpServletRequest){
         Integer userId = Integer.valueOf(JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0));
-        List<BorrowInfo> borrowInfos = userService.orderList(userId);
-        if (borrowInfos.size() < 1) {
+        List<BorrowInfo> borrowInfos = orderService.orderList(userId);
+        if(borrowInfos.size()<1){
             return BaseResult.success(null);
-        } else {
+        }else{
             return BaseResult.success(borrowInfos);
         }
     }

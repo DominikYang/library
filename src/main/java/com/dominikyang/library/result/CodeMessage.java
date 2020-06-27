@@ -36,6 +36,11 @@ public class CodeMessage {
     public static final CodeMessage NOT_MANAGER = new CodeMessage(3001,"没有管理员权限");
     public static final CodeMessage CHANGE_STATE_ERROR = new CodeMessage(3002,"修改状态失败") ;
     public static final CodeMessage DEL_USER_FAILE = new CodeMessage(3003,"删除用户失败");
+    public static final CodeMessage ADD_FAILE = new CodeMessage(3004,"添加用户失败") ;
+    public static final CodeMessage HAVE_NOT_USER = new CodeMessage(3005,"用户不存在");
+    public static final CodeMessage UPDATE_FAILE = new CodeMessage(3006,"修改用户信息失败");
+    public static final CodeMessage ADD_ROLE_ERROR = new CodeMessage(3007,"添加角色失败");
+    public static final CodeMessage DEL_ROLE_ERROR = new CodeMessage(3008,"删除角色失败");
 
 
     private int code;
