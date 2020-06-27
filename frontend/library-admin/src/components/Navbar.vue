@@ -24,13 +24,12 @@
                 activeIndex: '1',
                 activeIndex2: '1',
                 navList:[
-                    {name:'/home',navItem:'个人信息'},
                     {name:'/book',navItem:'图书管理'},
                     {name:'/user',navItem:'用户管理'},
 
                 ],
               logList:[
-                {name:'/error',navItem:'异常日志'},
+                {name:'/warn',navItem:'异常日志'},
                 {name:'/operate',navItem:'操作日志'},
               ]
             };

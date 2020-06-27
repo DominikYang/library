@@ -2,7 +2,10 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 
 import Login from '@/views/Login'
-import Home from '@/views/Home'
+import User from '@/views/UserManage'
+import Warn from '@/views/WarnLog'
+import Operate from '@/views/OperateLog'
+import Book from "../views/BookManage";
 
 
 Vue.use(VueRouter);
@@ -15,10 +18,26 @@ export default new VueRouter({
       component: Login
     },
     {
-      name:'Home',
-      path:'/home',
-      component: Home
+      name:'Book',
+      path:'/book',
+      component: Book
     },
+    {
+      name:'Operate',
+      path:'/operate',
+      component: Operate
+    },
+    {
+      name:'User',
+      path:'/user',
+      component: User
+    },
+    {
+      name:'Warn',
+      path:'/warn',
+      component: Warn
+    },
+
 
   ]
 })
