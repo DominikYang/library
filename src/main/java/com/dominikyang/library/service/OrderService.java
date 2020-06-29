@@ -1,6 +1,9 @@
 package com.dominikyang.library.service;
 
+import com.dominikyang.library.entity.Book;
 import com.dominikyang.library.entity.BorrowInfo;
+import com.dominikyang.library.entity.User;
+import com.dominikyang.library.exception.GlobalException;
 
 import java.util.List;
 
@@ -11,4 +14,6 @@ import java.util.List;
  **/
 public interface OrderService {
     List<BorrowInfo> orderList(Integer userId) ;
+
+    String createOrder(Book book,User user) throws GlobalException;
 }

@@ -32,4 +32,14 @@ public class BookServiceImpl implements BookService {
     public Book getBook(int id) {
         return bookDao.selectByPrimaryKey(id);
     }
+
+    @Override
+    public List<Book> searchBook(String name) {
+        BookExample example = new BookExample();
+        example.createCriteria().andAuthorLike(name);
+        example.or(example.createCriteria().andNameLike(name));
+        List<Book> books = bookDao.selectByExample(example);
+        return books;
+    }
+
 }

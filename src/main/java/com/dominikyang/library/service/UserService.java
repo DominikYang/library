@@ -30,4 +30,6 @@ public interface UserService {
     boolean delRole(Integer roleId);
 
     List<UserRole> listRole(Integer userId);
+
+    User getUser(Integer userId) throws GlobalException;
 }

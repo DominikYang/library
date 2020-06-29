@@ -14,4 +14,7 @@ public interface BookService {
     PageInfo<Book> getBooks(int pageNum, int pageSize);
 
     Book getBook(int id);
+
+    List<Book> searchBook(String name);
+
 }

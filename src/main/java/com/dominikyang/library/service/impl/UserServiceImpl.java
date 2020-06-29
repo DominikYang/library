@@ -134,6 +134,20 @@ public class UserServiceImpl implements UserService {
         return userRoles;
     }
 
+    @Override
+    public User getUser(Integer userId) throws GlobalException {
+        UserExample example = new UserExample();
+        example.createCriteria().andIdEqualTo(userId);
+        List<User> users = userDao.selectByExample(example);
+        if (users.size() < 1) {
+            throw new GlobalException(CodeMessage.ERROR_USERNAME);
+        } else if (users.size() > 1) {
+            throw new GlobalException(CodeMessage.DATABSE_ERROR);
+        } else {
+            return users.get(0);
+        }
+    }
+
     public String getToken(User user) {
         String token = "";
         token = JWT.create().withAudience(String.valueOf(user.getId()))

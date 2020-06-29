@@ -42,6 +42,8 @@ public class CodeMessage {
     public static final CodeMessage ADD_ROLE_ERROR = new CodeMessage(3007,"添加角色失败");
     public static final CodeMessage DEL_ROLE_ERROR = new CodeMessage(3008,"删除角色失败");
 
+    public static final CodeMessage CREATE_ORDER_ERROR = new CodeMessage(4001,"创建订单失败");
+
 
     private int code;
     private String message;
