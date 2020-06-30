@@ -42,4 +42,36 @@ public class BookServiceImpl implements BookService {
         return books;
     }
 
+    @Override
+    public boolean addBook(Book book) {
+        int success = bookDao.insert(book);
+        if(success<1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    @Override
+    public boolean editBook(Book book) {
+        int success = bookDao.updateByPrimaryKey(book);
+        if(success<1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    @Override
+    public boolean delBook(Integer id) {
+        BookExample example = new BookExample();
+        example.createCriteria().andIdEqualTo(id);
+        int success = bookDao.deleteByExample(example);
+        if(success<1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
 }

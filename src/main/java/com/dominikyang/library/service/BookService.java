@@ -17,4 +17,9 @@ public interface BookService {
 
     List<Book> searchBook(String name);
 
+    boolean addBook(Book book);
+
+    boolean editBook(Book book);
+
+    boolean delBook(Integer id);
 }

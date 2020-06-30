@@ -59,4 +59,18 @@ public class OrderServiceImpl implements OrderService {
             return info.getOrderId();
         }
     }
+
+    @Override
+    public boolean returnOrder(Integer id, Integer state) {
+        BorrowInfoExample example = new BorrowInfoExample();
+        example.createCriteria().andIdEqualTo(id);
+        BorrowInfo borrowInfo = new BorrowInfo();
+        borrowInfo.setState(state);
+        int success = borrowInfoDao.updateByExampleSelective(borrowInfo,example);
+        if(success<1){
+            return false;
+        }else{
+            return true;
+        }
+    }
 }

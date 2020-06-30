@@ -4,6 +4,7 @@ import com.dominikyang.library.entity.Book;
 import com.dominikyang.library.entity.BorrowInfo;
 import com.dominikyang.library.entity.User;
 import com.dominikyang.library.exception.GlobalException;
+import com.dominikyang.library.vo.StateVO;
 
 import java.util.List;
 
@@ -13,7 +14,9 @@ import java.util.List;
  * 注释：null
  **/
 public interface OrderService {
-    List<BorrowInfo> orderList(Integer userId) ;
+    List<BorrowInfo> orderList(Integer userId);
 
-    String createOrder(Book book,User user) throws GlobalException;
+    String createOrder(Book book, User user) throws GlobalException;
+
+    boolean returnOrder(Integer id, Integer state);
 }
