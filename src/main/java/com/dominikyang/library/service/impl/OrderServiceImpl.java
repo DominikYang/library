@@ -7,6 +7,7 @@ import com.dominikyang.library.result.CodeMessage;
 import com.dominikyang.library.service.BookService;
 import com.dominikyang.library.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,6 +18,7 @@ import java.util.List;
  * 创建时间：  2020/6/27
  * 注释：null
  **/
+@Service
 public class OrderServiceImpl implements OrderService {
     private static Integer borrowState = 0;
     private static Integer returnState = 1;
@@ -52,11 +54,11 @@ public class OrderServiceImpl implements OrderService {
         info.setOrderId("00001");  //订单号生成方式待定，暂时作为测试数据
         info.setState(borrowState);
 
-        int success= borrowInfoDao.insert(info);
-        if(success<1){
-            throw new GlobalException(CodeMessage.CREATE_ORDER_ERROR);
-        }else{
+        try{
+            borrowInfoDao.insert(info);
             return info.getOrderId();
+        }catch (Exception e){
+            throw new GlobalException(CodeMessage.CREATE_ORDER_ERROR);
         }
     }
 
@@ -66,11 +68,11 @@ public class OrderServiceImpl implements OrderService {
         example.createCriteria().andIdEqualTo(id);
         BorrowInfo borrowInfo = new BorrowInfo();
         borrowInfo.setState(state);
-        int success = borrowInfoDao.updateByExampleSelective(borrowInfo,example);
-        if(success<1){
-            return false;
-        }else{
+        try{
+            borrowInfoDao.updateByExampleSelective(borrowInfo,example);
             return true;
+        }catch (Exception e){
+            return false;
         }
     }
 }

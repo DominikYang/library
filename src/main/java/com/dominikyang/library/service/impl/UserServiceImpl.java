@@ -49,10 +49,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean add(User user) {
-        int num = userDao.insert(user);
-        if (num > 0) {
+        try{
+            userDao.insert(user);
             return true;
-        } else {
+        }catch (Exception e){
             return false;
         }
     }
@@ -71,11 +71,11 @@ public class UserServiceImpl implements UserService {
         } else if (users.size() < 1) {
             throw new GlobalException(CodeMessage.HAVE_NOT_USER);
         } else {
-            int success = userDao.updateByExample(users.get(0), example);
-            if (success < 1) {
-                throw new GlobalException(CodeMessage.UPDATE_FAILE);
-            } else {
+            try{
+                userDao.updateByExample(users.get(0), example);
                 return true;
+            }catch (Exception e){
+                throw new GlobalException(CodeMessage.UPDATE_FAILE);
             }
         }
     }
@@ -92,11 +92,11 @@ public class UserServiceImpl implements UserService {
         } else {
             example.clear();
             example.createCriteria().andStateEqualTo(stateVO.getState());
-            int success = userDao.updateByExample(users.get(0), example);
-            if (success < 1) {
-                return false;
-            } else {
+            try{
+                userDao.updateByExample(users.get(0), example);
                 return true;
+            }catch (Exception e){
+                throw new GlobalException(CodeMessage.UPDATE_FAILE);
             }
         }
     }
@@ -106,11 +106,11 @@ public class UserServiceImpl implements UserService {
         UserRole userRole = new UserRole();
         userRole.setRoleId(roleVO.getRoleId());
         userRole.setUserId(roleVO.getUserId());
-        int success = userRoleDao.insert(userRole);
-        if (success < 1) {
+        try{
+            userRoleDao.insert(userRole);
+            return true ;
+        }catch (Exception e){
             return false;
-        } else {
-            return true;
         }
     }
 
@@ -118,11 +118,11 @@ public class UserServiceImpl implements UserService {
     public boolean delRole(Integer id) {
         UserRoleExample example = new UserRoleExample();
         example.createCriteria().andIdEqualTo(id);
-        int success = userRoleDao.deleteByExample(example);
-        if(success<1){
-            return false;
-        }else{
+        try{
+            userRoleDao.deleteByExample(example);
             return true;
+        }catch (Exception e){
+            return false;
         }
     }
 

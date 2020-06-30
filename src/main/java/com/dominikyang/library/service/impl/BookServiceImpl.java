@@ -44,21 +44,21 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public boolean addBook(Book book) {
-        int success = bookDao.insert(book);
-        if(success<1){
-            return false;
-        }else{
+        try{
+            bookDao.insert(book);
             return true;
+        }catch (Exception e){
+            return false;
         }
     }
 
     @Override
     public boolean editBook(Book book) {
-        int success = bookDao.updateByPrimaryKey(book);
-        if(success<1){
-            return false;
-        }else{
+        try{
+            bookDao.updateByPrimaryKey(book);
             return true;
+        }catch (Exception e){
+            return false;
         }
     }
 
@@ -66,11 +66,11 @@ public class BookServiceImpl implements BookService {
     public boolean delBook(Integer id) {
         BookExample example = new BookExample();
         example.createCriteria().andIdEqualTo(id);
-        int success = bookDao.deleteByExample(example);
-        if(success<1){
-            return false;
-        }else{
+        try{
+            bookDao.deleteByExample(example);
             return true;
+        }catch (Exception e){
+            return false;
         }
     }
 
