@@ -1,4 +1,9 @@
 spring:
+  cloud:
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: 47.93.245.153:8858
   profiles:
     include: test
   datasource:
@@ -30,3 +35,4 @@ logging:
 pagehelper:
   reasonable: true
   helper-dialect: mysql
+
