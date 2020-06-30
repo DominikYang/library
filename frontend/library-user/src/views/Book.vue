@@ -159,7 +159,7 @@
             </el-row>
           </el-main>
           <el-footer>
-            <el-button disabled>申请借阅</el-button>
+            <el-button id="btn" disabled>申请借阅</el-button>
           </el-footer>
         </el-container>
       </el-dialog>
@@ -171,10 +171,16 @@
 <script>
   import Header from "../components/Header";
   import Navbar from "../components/Navbar";
+  import Global from "../components/Global";
 
   export default {
     name: "Book.vue",
     components: {Navbar, Header},
+    beforeRouteEnter: (from, to, next) => {
+      next(vm => {
+        vm.initData();
+      });
+    },
     data() {
       return {
         dialogDetails: false,
@@ -191,6 +197,8 @@
             state: 1
           }
         ],
+        total:'',
+        pageSize:'',
         input: '',
         select: ''
       }
@@ -198,6 +206,24 @@
     methods: {
       openDetails(row) {
         this.dialogDetails = true;
+      },
+      initData() {
+        this.axios({
+          method: 'get',
+          url: Global.httpUrl + 'book/1',
+          headers: {
+            'Content-Type': 'application/json',
+            'token': Global.token
+          }
+        }).then(response=>{
+          if(response.data.code === 20000000){
+            this.tableData = this.data.data.list;
+            this.total = this.data.data.pages;
+            this.total = this.data.data.pageSize;
+          }else {
+            this.$message.error(response.data.message);
+          }
+        })
       }
     }
   }
