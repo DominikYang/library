@@ -46,9 +46,9 @@
                     headers: {'Content-Type': 'application/json'}
                 }).then(response => {
                     console.log(response);
-                    if (response.data.code === 200) {
+                    if (response.data.code === 20000000) {
                         Global.setToken(response.data.data.token);
-                        this.$router.push({path: '/client'})
+                        this.$router.push({path: '/home'})
                     }else {
                         this.$message.error(response.data.message);
                     }
