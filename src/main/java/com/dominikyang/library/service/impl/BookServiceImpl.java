@@ -1,9 +1,11 @@
 package com.dominikyang.library.service.impl;
 
+import com.dominikyang.library.commons.CommonFinalValues;
 import com.dominikyang.library.dao.BookDao;
 import com.dominikyang.library.entity.Book;
 import com.dominikyang.library.entity.BookExample;
 import com.dominikyang.library.service.BookService;
+import com.dominikyang.library.utils.RedisUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public PageInfo<Book> getBooks(int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum,pageSize);
+        PageHelper.startPage(pageNum, pageSize);
         List<Book> books = bookDao.selectByExample(new BookExample());
         PageInfo<Book> pageInfo = new PageInfo<>(books);
         return pageInfo;
@@ -30,7 +32,17 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book getBook(int id) {
-        return bookDao.selectByPrimaryKey(id);
+        Book existBook = (Book) RedisUtils.get(CommonFinalValues.BOOK_DETAILS + id);
+        if (existBook == null) {
+            Book book = bookDao.selectByPrimaryKey(id);
+            if (book == null) {
+                RedisUtils.set(CommonFinalValues.BOOK_DETAILS + id,new Book());
+            }
+            return book;
+        }
+        else {
+            return existBook;
+        }
     }
 
     @Override
@@ -44,20 +56,20 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public boolean addBook(Book book) {
-        try{
+        try {
             bookDao.insert(book);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
     @Override
     public boolean editBook(Book book) {
-        try{
+        try {
             bookDao.updateByPrimaryKey(book);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
@@ -66,10 +78,10 @@ public class BookServiceImpl implements BookService {
     public boolean delBook(Integer id) {
         BookExample example = new BookExample();
         example.createCriteria().andIdEqualTo(id);
-        try{
+        try {
             bookDao.deleteByExample(example);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
