@@ -2,6 +2,7 @@ package com.dominikyang.library.service;
 
 import com.dominikyang.library.entity.LogAdmin;
 import com.dominikyang.library.entity.LogWarn;
+import com.dominikyang.library.exception.GlobalException;
 
 import java.util.List;
 
@@ -14,4 +15,8 @@ public interface LogService {
     List<LogAdmin> logAdminList();
 
     List<LogWarn> logWarnList();
+
+    void addLogAdmin(LogAdmin logAdmin) throws GlobalException;
+
+    void addLogWarn(LogWarn logWarn) throws GlobalException;
 }

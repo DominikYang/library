@@ -2,9 +2,13 @@ package com.dominikyang.library.controller;
 
 import com.auth0.jwt.JWT;
 import com.dominikyang.library.entity.Book;
+import com.dominikyang.library.entity.LogAdmin;
+import com.dominikyang.library.entity.LogWarn;
+import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.result.BaseResult;
 import com.dominikyang.library.result.CodeMessage;
 import com.dominikyang.library.service.BookService;
+import com.dominikyang.library.service.LogService;
 import com.dominikyang.library.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * 创建人：肖易安
@@ -27,41 +32,79 @@ public class BookManagerController {
 
     @Autowired
     private BookService bookService;
+    @Autowired
+    private LogService logService;
 
     @PostMapping("/add")
-    public BaseResult<String> addBook(Book book, HttpServletRequest httpServletRequest) {
+    public BaseResult<String> addBook(Book book, HttpServletRequest httpServletRequest) throws GlobalException {
         String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
         boolean success = bookService.addBook(book);
         if (success) {
+            LogAdmin logAdmin = new LogAdmin();
+            logAdmin.setDetails("添加"+book.getName());
+            logAdmin.setOperateUserId(Integer.parseInt(userid));
+            logAdmin.setOperateName("添加书籍");
+            logAdmin.setTime(new Date());
+            logService.addLogAdmin(logAdmin);
             log.info("用户"+userid+" 添加书籍："+book.getName());
             return BaseResult.success("添加成功");
         } else {
+            LogWarn logWarn = new LogWarn();
+            logWarn.setTime(new Date());
+            logWarn.setWarnCode(CodeMessage.ADD_BOOK_FAILE.getCode() + "");
+            logWarn.setWarnName("添加书籍错误");
+            logWarn.setDetails(CodeMessage.ADD_BOOK_FAILE.getMessage());
+            logService.addLogWarn(logWarn);
             log.warn("添加书籍失败");
             return BaseResult.fail(CodeMessage.ADD_BOOK_FAILE);
         }
     }
 
     @PostMapping("/edit")
-    public BaseResult<String> editBook(Book book, HttpServletRequest httpServletRequest) {
+    public BaseResult<String> editBook(Book book, HttpServletRequest httpServletRequest) throws GlobalException {
         String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
         boolean success = bookService.editBook(book);
         if (success) {
+            LogAdmin logAdmin = new LogAdmin();
+            logAdmin.setDetails("编辑"+book.getName());
+            logAdmin.setOperateUserId(Integer.parseInt(userid));
+            logAdmin.setOperateName("编辑书籍");
+            logAdmin.setTime(new Date());
+            logService.addLogAdmin(logAdmin);
             log.info("用户"+userid+" 修改书籍"+book.getName());
             return BaseResult.success("编辑成功");
         } else {
+            LogWarn logWarn = new LogWarn();
+            logWarn.setTime(new Date());
+            logWarn.setWarnCode(CodeMessage.EDIT_BOOK_FAILE.getCode() + "");
+            logWarn.setWarnName("编辑书籍错误");
+            logWarn.setDetails(CodeMessage.EDIT_BOOK_FAILE.getMessage());
+            logService.addLogWarn(logWarn);
             log.warn("编辑书籍失败");
             return BaseResult.fail(CodeMessage.EDIT_BOOK_FAILE);
         }
     }
 
     @PostMapping("/del")
-    public BaseResult<String> delBook(Integer id, HttpServletRequest httpServletRequest) {
+    public BaseResult<String> delBook(Integer id, HttpServletRequest httpServletRequest) throws GlobalException {
         String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
         boolean success = bookService.delBook(id);
         if (success) {
+            LogAdmin logAdmin = new LogAdmin();
+            logAdmin.setDetails("删除书籍ID:"+id);
+            logAdmin.setOperateUserId(Integer.parseInt(userid));
+            logAdmin.setOperateName("删除书籍");
+            logAdmin.setTime(new Date());
+            logService.addLogAdmin(logAdmin);
             log.info("用户"+userid+" 删除书籍:"+id);
             return BaseResult.success("删除成功");
         } else {
+            LogWarn logWarn = new LogWarn();
+            logWarn.setTime(new Date());
+            logWarn.setWarnCode(CodeMessage.DEL_BOOK_FAILE.getCode() + "");
+            logWarn.setWarnName("删除书籍错误");
+            logWarn.setDetails(CodeMessage.DEL_BOOK_FAILE.getMessage());
+            logService.addLogWarn(logWarn);
             log.warn("删除书籍失败");
             return BaseResult.fail(CodeMessage.DEL_BOOK_FAILE);
         }

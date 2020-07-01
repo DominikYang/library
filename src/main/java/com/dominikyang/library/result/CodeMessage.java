@@ -49,6 +49,8 @@ public class CodeMessage {
     public static final CodeMessage EDIT_BOOK_FAILE = new CodeMessage(4003,"编辑书籍失败");
     public static final CodeMessage DEL_BOOK_FAILE = new CodeMessage(4004,"删除书籍失败");
 
+    public static final CodeMessage ADD_LOG_ERROR = new CodeMessage(5000,"log插入数据库失败");
+
 
     private int code;
     private String message;

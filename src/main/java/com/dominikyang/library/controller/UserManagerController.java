@@ -1,11 +1,14 @@
 package com.dominikyang.library.controller;
 
 import com.auth0.jwt.JWT;
+import com.dominikyang.library.entity.LogAdmin;
+import com.dominikyang.library.entity.LogWarn;
 import com.dominikyang.library.entity.User;
 import com.dominikyang.library.entity.UserRole;
 import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.result.BaseResult;
 import com.dominikyang.library.result.CodeMessage;
+import com.dominikyang.library.service.LogService;
 import com.dominikyang.library.service.UserService;
 import com.dominikyang.library.vo.RoleVO;
 import com.dominikyang.library.vo.StateVO;
@@ -16,8 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import sun.rmi.runtime.Log;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 
@@ -32,14 +37,16 @@ public class UserManagerController {
     private static final Logger log = LoggerFactory.getLogger(UserManagerController.class);
 
     private UserService userService ;
+    private LogService logService;
 
     @Autowired
-    public UserManagerController(UserService userService){
+    public UserManagerController(UserService userService, LogService logService){
         this.userService = userService ;
+        this.logService = logService ;
     }
 
     @PostMapping("/add")
-    public BaseResult<String> addUser(UserVO userVO, HttpServletRequest httpServletRequest){
+    public BaseResult<String> addUser(UserVO userVO, HttpServletRequest httpServletRequest) throws GlobalException {
         String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
         User user = new User();
         user.setUsername(userVO.getUsername());
@@ -51,16 +58,28 @@ public class UserManagerController {
         user.setRealName(userVO.getRealName());
         boolean success = userService.add(user);
         if(success){
+            LogAdmin logAdmin = new LogAdmin();
+            logAdmin.setDetails("添加用户:"+userVO.getRealName());
+            logAdmin.setOperateUserId(Integer.parseInt(userid));
+            logAdmin.setOperateName("添加用户");
+            logAdmin.setTime(new Date());
+            logService.addLogAdmin(logAdmin);
             log.info("用户"+userid+" 添加用户:"+userVO.getRealName());
             return BaseResult.success("添加成功");
         }else{
+            LogWarn logWarn = new LogWarn();
+            logWarn.setTime(new Date());
+            logWarn.setWarnCode(CodeMessage.ADD_FAILE.getCode() + "");
+            logWarn.setWarnName("添加用户错误");
+            logWarn.setDetails(CodeMessage.ADD_FAILE.getMessage());
+            logService.addLogWarn(logWarn);
             log.warn("添加用户失败");
             return BaseResult.fail(CodeMessage.ADD_FAILE);
         }
     }
 
     @PostMapping("/edit")
-    public BaseResult<String> editUser(UserVO userVO,HttpServletRequest httpServletRequest){
+    public BaseResult<String> editUser(UserVO userVO,HttpServletRequest httpServletRequest) throws GlobalException {
         String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
         User user = new User();
         user.setUsername(userVO.getUsername());
@@ -74,66 +93,132 @@ public class UserManagerController {
         try{
             boolean success = userService.edit(user);
             if(success){
+                LogAdmin logAdmin = new LogAdmin();
+                logAdmin.setDetails(" 修改用户:"+userVO.getRealName());
+                logAdmin.setOperateUserId(Integer.parseInt(userid));
+                logAdmin.setOperateName("修改用户信息");
+                logAdmin.setTime(new Date());
+                logService.addLogAdmin(logAdmin);
                 log.info("用户"+userid+" 修改用户:"+userVO.getRealName());
                 return BaseResult.success("修改成功");
             }else{
+                LogWarn logWarn = new LogWarn();
+                logWarn.setTime(new Date());
+                logWarn.setWarnCode(CodeMessage.UPDATE_FAILE.getCode() + "");
+                logWarn.setWarnName("修改用户错误");
+                logWarn.setDetails(CodeMessage.UPDATE_FAILE.getMessage());
+                logService.addLogWarn(logWarn);
                 log.warn("修改用户信息失败");
                 return BaseResult.fail(CodeMessage.UPDATE_FAILE);
             }
         } catch (GlobalException e) {
+            LogWarn logWarn = new LogWarn();
+            logWarn.setTime(new Date());
+            logWarn.setWarnCode(e.getCodeMessage().getCode() + "");
+            logWarn.setWarnName("修改用户错误");
+            logWarn.setDetails(e.getCodeMessage().getMessage());
+            logService.addLogWarn(logWarn);
             log.warn(e.getCodeMessage().getMessage());
             return BaseResult.fail(e.getCodeMessage());
         }
     }
 
     @PostMapping("/state")
-    public BaseResult<String> changeState(StateVO stateVO,HttpServletRequest httpServletRequest){
+    public BaseResult<String> changeState(StateVO stateVO,HttpServletRequest httpServletRequest) throws GlobalException {
         String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
         try{
             boolean success = userService.changeState(stateVO);
             if(success){
+                LogAdmin logAdmin = new LogAdmin();
+                logAdmin.setDetails(" 修改用户状态:"+stateVO.getUserId());
+                logAdmin.setOperateUserId(Integer.parseInt(userid));
+                logAdmin.setOperateName("修改用户状态");
+                logAdmin.setTime(new Date());
+                logService.addLogAdmin(logAdmin);
                 log.info("用户"+userid+" 修改用户状态:"+stateVO.getUserId());
                 return BaseResult.success("修改成功");
             }else{
+                LogWarn logWarn = new LogWarn();
+                logWarn.setTime(new Date());
+                logWarn.setWarnCode(CodeMessage.CHANGE_STATE_ERROR.getCode() + "");
+                logWarn.setWarnName("修改状态错误");
+                logWarn.setDetails(CodeMessage.CHANGE_STATE_ERROR.getMessage());
+                logService.addLogWarn(logWarn);
                 log.warn("修改状态失败");
                 return BaseResult.fail(CodeMessage.CHANGE_STATE_ERROR);
             }
         } catch (GlobalException e) {
+            LogWarn logWarn = new LogWarn();
+            logWarn.setTime(new Date());
+            logWarn.setWarnCode(e.getCodeMessage().getCode() + "");
+            logWarn.setWarnName("修改状态错误");
+            logWarn.setDetails(e.getCodeMessage().getMessage());
+            logService.addLogWarn(logWarn);
             log.warn(e.getCodeMessage().getMessage());
             return BaseResult.fail(e.getCodeMessage());
         }
     }
 
     @PostMapping("/role/add")
-    public BaseResult<String> addUserRole(RoleVO roleVO,HttpServletRequest httpServletRequest){
+    public BaseResult<String> addUserRole(RoleVO roleVO,HttpServletRequest httpServletRequest) throws GlobalException {
         String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
         boolean success = userService.addRole(roleVO);
         if(success){
+            LogAdmin logAdmin = new LogAdmin();
+            logAdmin.setDetails(" 添加角色：用户-"+roleVO.getUserId()+" 角色-"+roleVO.getRoleId());
+            logAdmin.setOperateUserId(Integer.parseInt(userid));
+            logAdmin.setOperateName("添加角色");
+            logAdmin.setTime(new Date());
+            logService.addLogAdmin(logAdmin);
             log.info("用户"+userid+" 添加角色：用户-"+roleVO.getUserId()+" 角色-"+roleVO.getRoleId());
             return BaseResult.success("添加成功");
         }else{
+            LogWarn logWarn = new LogWarn();
+            logWarn.setTime(new Date());
+            logWarn.setWarnCode(CodeMessage.ADD_ROLE_ERROR.getCode() + "");
+            logWarn.setWarnName("添加角色错误");
+            logWarn.setDetails(CodeMessage.ADD_ROLE_ERROR.getMessage());
+            logService.addLogWarn(logWarn);
             log.warn("添加角色失败");
             return BaseResult.fail(CodeMessage.ADD_ROLE_ERROR);
         }
     }
 
     @PostMapping("/role/del")
-    public BaseResult<String> delUserRole(Integer id,HttpServletRequest httpServletRequest){
+    public BaseResult<String> delUserRole(Integer id,HttpServletRequest httpServletRequest) throws GlobalException {
         String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
         boolean success = userService.delRole(id);
         if(success){
+            LogAdmin logAdmin = new LogAdmin();
+            logAdmin.setDetails("删除角色Id："+id);
+            logAdmin.setOperateUserId(Integer.parseInt(userid));
+            logAdmin.setOperateName("删除角色");
+            logAdmin.setTime(new Date());
+            logService.addLogAdmin(logAdmin);
             log.info("用户"+userid+" 删除角色"+id);
             return BaseResult.success("删除成功");
         }else{
+            LogWarn logWarn = new LogWarn();
+            logWarn.setTime(new Date());
+            logWarn.setWarnCode(CodeMessage.DEL_ROLE_ERROR.getCode() + "");
+            logWarn.setWarnName("删除角色错误");
+            logWarn.setDetails(CodeMessage.DEL_ROLE_ERROR.getMessage());
+            logService.addLogWarn(logWarn);
             log.warn("删除角色失败");
             return BaseResult.fail(CodeMessage.DEL_ROLE_ERROR);
         }
     }
 
     @PostMapping("/role/list")
-    public BaseResult<List<UserRole>> listUserRole(Integer userId,HttpServletRequest httpServletRequest){
+    public BaseResult<List<UserRole>> listUserRole(Integer userId,HttpServletRequest httpServletRequest) throws GlobalException {
         String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
         List<UserRole> userRoles = userService.listRole(userId);
+        LogAdmin logAdmin = new LogAdmin();
+        logAdmin.setDetails("查看角色列表");
+        logAdmin.setOperateUserId(Integer.parseInt(userid));
+        logAdmin.setOperateName("查看角色列表");
+        logAdmin.setTime(new Date());
+        logService.addLogAdmin(logAdmin);
         log.info("用户"+userid+" 查看角色列表");
         if(userRoles.size()<1){
             return null;
