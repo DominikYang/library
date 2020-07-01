@@ -47,12 +47,46 @@
 </template>
 
 <script>
-    import Header from "../components/Header";
-    import Navbar from "../components/Navbar";
-    export default {
-        name: "WarnLog",
-      components: {Navbar, Header}
+  import Header from "../components/Header";
+  import Navbar from "../components/Navbar";
+  import Global from "../components/Global";
+
+  export default {
+    name: "WarnLog",
+    beforeRouteEnter: (from, to, next) => {
+      next(vm => {
+        vm.initData();
+      });
+    },
+    components: {Navbar, Header},
+    data() {
+      return {
+        tableData: [{
+          id: '',
+          date: '',
+          operationName: '',
+          operateCode: ''
+        }]
+      }
+    },
+    methods: {
+      initData() {
+        this.axios({
+          method: 'get',
+          url: Global.httpUrl + 'admin/log/warn',
+          headers: {
+            'Content-Type': 'application/json',
+            'token': Global.token
+          }
+        }).then(response => {
+          console.log(response);
+          this.tableData = response.data.data;
+        }).catch(error => {
+          console.log(error);
+        })
+      }
     }
+  }
 </script>
 
 <style scoped>

@@ -52,12 +52,47 @@
 </template>
 
 <script>
-    import Header from "../components/Header";
-    import Navbar from "../components/Navbar";
-    export default {
-        name: "OperateLog",
-      components: {Navbar, Header}
+  import Header from "../components/Header";
+  import Navbar from "../components/Navbar";
+  import Global from "../components/Global";
+
+  export default {
+    name: "OperateLog",
+    components: {Navbar, Header},
+    beforeRouteEnter: (from, to, next) => {
+      next(vm => {
+        vm.initData();
+      });
+    },
+    data() {
+      return {
+        tableData: [{
+          id: '',
+          date: '',
+          operationName: '',
+          operateCode: '',
+          method: ''
+        }]
+      }
+    },
+    methods: {
+      initData() {
+        this.axios({
+          method: 'get',
+          url: Global.httpUrl + 'admin/log/operate',
+          headers: {
+            'Content-Type': 'application/json',
+            'token': Global.token
+          }
+        }).then(response => {
+          console.log(response);
+          this.tableData = response.data.data;
+        }).catch(error => {
+          console.log(error);
+        })
+      }
     }
+  }
 </script>
 
 <style scoped>
