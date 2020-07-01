@@ -9,6 +9,8 @@ import com.dominikyang.library.service.AdminService;
 import com.dominikyang.library.utils.RedisUtils;
 import com.dominikyang.library.vo.LoginVO;
 import com.fasterxml.jackson.databind.ser.Serializers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +28,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
+    private static final Logger log = LoggerFactory.getLogger(AdminController.class);
+
     private static long tokenTimeOut = 86400 ;
 
     private AdminService adminService;
@@ -43,6 +47,7 @@ public class AdminController {
             RedisUtils.set(userId,login,tokenTimeOut);
             return BaseResult.success(login);
         } catch (GlobalException e) {
+            log.warn(e.getCodeMessage().getMessage());
             return BaseResult.fail(e.getCodeMessage());
         }
     }
@@ -54,13 +59,16 @@ public class AdminController {
         if(success){
             return BaseResult.success(null);
         }else{
+            log.warn(CodeMessage.LOGOUT_FAILE.getMessage());
             return BaseResult.fail(CodeMessage.LOGOUT_FAILE);
         }
     }
 
     @GetMapping("/role/list")
     public BaseResult<List<Role>> roleList(HttpServletRequest httpServletRequest){
+        String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
         List<Role> roles = adminService.getRoles();
+        log.info("用户"+userid+" 查看角色表");
         return BaseResult.success(roles);
     }
 }

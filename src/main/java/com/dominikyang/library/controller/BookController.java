@@ -10,6 +10,8 @@ import com.dominikyang.library.service.BookService;
 import com.dominikyang.library.service.OrderService;
 import com.dominikyang.library.service.UserService;
 import com.github.pagehelper.PageInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/book")
 public class BookController {
+    private static final Logger log = LoggerFactory.getLogger(BookController.class);
 
     @Autowired
     private BookService bookService;

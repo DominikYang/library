@@ -10,6 +10,8 @@ import com.dominikyang.library.service.UserService;
 import com.dominikyang.library.utils.RedisUtils;
 import com.dominikyang.library.vo.LoginVO;
 import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +29,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
+
     //token存在时间
     private static long tokenTimeOut = 86400 ;
 
@@ -55,6 +59,7 @@ public class UserController {
             RedisUtils.set(userId,login,tokenTimeOut);
             return BaseResult.success(login);
         } catch (GlobalException e) {
+            log.warn(e.getCodeMessage().getMessage());
             return BaseResult.fail(e.getCodeMessage());
         }
     }
@@ -66,6 +71,7 @@ public class UserController {
         if(success){
             return BaseResult.success(null);
         }else{
+            log.warn(CodeMessage.LOGOUT_FAILE.getMessage());
             return BaseResult.fail(CodeMessage.LOGOUT_FAILE);
         }
     }
