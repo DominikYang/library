@@ -8,10 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
@@ -19,6 +16,7 @@ import java.util.Objects;
  * @author Wei yuyaung
  * @date 2020.06.23 2:34
  */
+@CrossOrigin(value = "*")
 @RestController
 @RequestMapping("/hello")
 public class HelloController {

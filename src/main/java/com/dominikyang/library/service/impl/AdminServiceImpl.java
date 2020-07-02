@@ -44,8 +44,9 @@ public class AdminServiceImpl implements AdminService {
             example1.createCriteria().andUserIdEqualTo(users.get(0).getId());
             List<UserRole> roles = userRoleDao.selectByExample(example1);
             for (UserRole role:roles) {
-                if(role.getRoleId()==5){
-                    isAdmin = true ;
+                if (role.getRoleId() == 5) {
+                    isAdmin = true;
+                    break;
                 }
             }
         } else {

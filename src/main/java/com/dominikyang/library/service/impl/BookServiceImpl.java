@@ -9,6 +9,7 @@ import com.dominikyang.library.utils.RedisUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +23,9 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private BookDao bookDao;
 
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
     @Override
     public PageInfo<Book> getBooks(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
@@ -32,15 +36,19 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book getBook(int id) {
-        Book existBook = (Book) RedisUtils.get(CommonFinalValues.BOOK_DETAILS + id);
+        Book existBook = (Book) redisTemplate.opsForValue().get(CommonFinalValues.BOOK_DETAILS + id);
         if (existBook == null) {
             Book book = bookDao.selectByPrimaryKey(id);
             if (book == null) {
-                RedisUtils.set(CommonFinalValues.BOOK_DETAILS + id,new Book());
+                redisTemplate.opsForValue().set(CommonFinalValues.BOOK_DETAILS + id, new Book(id, -1),400);
+                //访问不存在的请求，需要把这个异常写进日志里面
             }
             return book;
-        }
-        else {
+        } else if (existBook.getState() == -1) {
+            //不存在的结果被缓存了起来
+            //访问不存在的请求，需要把这个异常写进日志里面
+            return null;
+        } else {
             return existBook;
         }
     }
