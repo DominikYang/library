@@ -7,6 +7,7 @@ import com.dominikyang.library.entity.LogWarn;
 import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.result.BaseResult;
 import com.dominikyang.library.result.CodeMessage;
+import com.dominikyang.library.service.AdminService;
 import com.dominikyang.library.service.BookService;
 import com.dominikyang.library.service.LogService;
 import com.dominikyang.library.service.OrderService;
@@ -35,6 +36,8 @@ public class BookManagerController {
     private BookService bookService;
     @Autowired
     private LogService logService;
+    @Autowired
+    private AdminService adminService;
 
     @PostMapping("/add")
     public BaseResult<String> addBook(Book book, HttpServletRequest httpServletRequest) throws GlobalException {
@@ -43,6 +46,9 @@ public class BookManagerController {
             userId = TokenDecodeUtils.getUserId(httpServletRequest);
         }catch (GlobalException e){
             return BaseResult.fail(e.getCodeMessage());
+        }
+        if(!adminService.isAdmin(Integer.parseInt(userId))){
+            return BaseResult.fail(CodeMessage.NOT_MANAGER);
         }
         boolean success = bookService.addBook(book);
         if (success) {
@@ -74,6 +80,9 @@ public class BookManagerController {
         }catch (GlobalException e){
             return BaseResult.fail(e.getCodeMessage());
         }
+        if(!adminService.isAdmin(Integer.parseInt(userid))){
+            return BaseResult.fail(CodeMessage.NOT_MANAGER);
+        }
         boolean success = bookService.editBook(book);
         if (success) {
             LogAdmin logAdmin = new LogAdmin();
@@ -103,6 +112,9 @@ public class BookManagerController {
             userid = TokenDecodeUtils.getUserId(httpServletRequest);
         }catch (GlobalException e){
             return BaseResult.fail(e.getCodeMessage());
+        }
+        if(!adminService.isAdmin(Integer.parseInt(userid))){
+            return BaseResult.fail(CodeMessage.NOT_MANAGER);
         }
         boolean success = bookService.delBook(id);
         if (success) {

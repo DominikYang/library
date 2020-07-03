@@ -89,14 +89,19 @@ public class AdminController {
     @GetMapping("/role/list")
     public BaseResult<List<Role>> roleList(HttpServletRequest httpServletRequest) throws GlobalException {
         String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
-        List<Role> roles = adminService.getRoles();
-        LogAdmin logAdmin = new LogAdmin();
-        logAdmin.setDetails("查看角色表");
-        logAdmin.setOperateUserId(Integer.parseInt(userid));
-        logAdmin.setOperateName("查看角色表");
-        logAdmin.setTime(new Date());
-        logService.addLogAdmin(logAdmin);
-        log.info("用户"+userid+" 查看角色表");
-        return BaseResult.success(roles);
+        if(adminService.isAdmin(Integer.parseInt(userid))){
+            List<Role> roles = adminService.getRoles();
+            LogAdmin logAdmin = new LogAdmin();
+            logAdmin.setDetails("查看角色表");
+            logAdmin.setOperateUserId(Integer.parseInt(userid));
+            logAdmin.setOperateName("查看角色表");
+            logAdmin.setTime(new Date());
+            logService.addLogAdmin(logAdmin);
+            log.info("用户"+userid+" 查看角色表");
+            return BaseResult.success(roles);
+        }else{
+            return BaseResult.fail(CodeMessage.NOT_MANAGER);
+        }
+
     }
 }

@@ -8,6 +8,7 @@ import com.dominikyang.library.entity.UserRole;
 import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.result.BaseResult;
 import com.dominikyang.library.result.CodeMessage;
+import com.dominikyang.library.service.AdminService;
 import com.dominikyang.library.service.LogService;
 import com.dominikyang.library.service.UserService;
 import com.dominikyang.library.utils.TokenDecodeUtils;
@@ -39,11 +40,13 @@ public class UserManagerController {
 
     private UserService userService ;
     private LogService logService;
+    private AdminService adminService;
 
     @Autowired
-    public UserManagerController(UserService userService, LogService logService){
+    public UserManagerController(UserService userService, LogService logService,AdminService adminService){
         this.userService = userService ;
         this.logService = logService ;
+        this.adminService = adminService ;
     }
 
     @PostMapping("/add")
@@ -53,6 +56,9 @@ public class UserManagerController {
             userid = TokenDecodeUtils.getUserId(httpServletRequest);
         }catch (GlobalException e){
             return BaseResult.fail(e.getCodeMessage());
+        }
+        if(!adminService.isAdmin(Integer.parseInt(userid))){
+            return BaseResult.fail(CodeMessage.NOT_MANAGER);
         }
         User user = new User();
         user.setUsername(userVO.getUsername());
@@ -91,6 +97,9 @@ public class UserManagerController {
             userid = TokenDecodeUtils.getUserId(httpServletRequest);
         }catch (GlobalException e){
             return BaseResult.fail(e.getCodeMessage());
+        }
+        if(!adminService.isAdmin(Integer.parseInt(userid))){
+            return BaseResult.fail(CodeMessage.NOT_MANAGER);
         }
         User user = new User();
         user.setUsername(userVO.getUsername());
@@ -142,6 +151,9 @@ public class UserManagerController {
         }catch (GlobalException e){
             return BaseResult.fail(e.getCodeMessage());
         }
+        if(!adminService.isAdmin(Integer.parseInt(userid))){
+            return BaseResult.fail(CodeMessage.NOT_MANAGER);
+        }
         try{
             boolean success = userService.changeState(stateVO);
             if(success){
@@ -183,6 +195,9 @@ public class UserManagerController {
         }catch (GlobalException e){
             return BaseResult.fail(e.getCodeMessage());
         }
+        if(!adminService.isAdmin(Integer.parseInt(userid))){
+            return BaseResult.fail(CodeMessage.NOT_MANAGER);
+        }
         boolean success = userService.addRole(roleVO);
         if(success){
             LogAdmin logAdmin = new LogAdmin();
@@ -213,6 +228,9 @@ public class UserManagerController {
         }catch (GlobalException e){
             return BaseResult.fail(e.getCodeMessage());
         }
+        if(!adminService.isAdmin(Integer.parseInt(userid))){
+            return BaseResult.fail(CodeMessage.NOT_MANAGER);
+        }
         boolean success = userService.delRole(id);
         if(success){
             LogAdmin logAdmin = new LogAdmin();
@@ -242,6 +260,9 @@ public class UserManagerController {
             userid = TokenDecodeUtils.getUserId(httpServletRequest);
         }catch (GlobalException e){
             return BaseResult.fail(e.getCodeMessage());
+        }
+        if(!adminService.isAdmin(Integer.parseInt(userid))){
+            return BaseResult.fail(CodeMessage.NOT_MANAGER);
         }
         List<UserRole> userRoles = userService.listRole(userId);
         LogAdmin logAdmin = new LogAdmin();

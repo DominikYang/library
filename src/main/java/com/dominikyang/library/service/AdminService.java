@@ -15,4 +15,6 @@ public interface AdminService {
     String login(LoginVO loginVO) throws GlobalException;
 
     List<Role> getRoles();
+
+    boolean isAdmin(Integer userId) throws GlobalException;
 }

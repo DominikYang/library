@@ -7,10 +7,8 @@ import com.dominikyang.library.entity.LogAdmin;
 import com.dominikyang.library.entity.LogWarn;
 import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.result.BaseResult;
-import com.dominikyang.library.service.BookService;
-import com.dominikyang.library.service.LogService;
-import com.dominikyang.library.service.OrderService;
-import com.dominikyang.library.service.UserService;
+import com.dominikyang.library.result.CodeMessage;
+import com.dominikyang.library.service.*;
 import com.dominikyang.library.utils.TokenDecodeUtils;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -35,19 +33,24 @@ public class LogController {
     private static final Logger log = LoggerFactory.getLogger(LogController.class);
 
     private LogService logService;
+    private AdminService adminService;
 
     @Autowired
-    public LogController(LogService logService){
+    public LogController(LogService logService,AdminService adminService){
+        this.adminService = adminService;
         this.logService = logService;
     }
 
     @GetMapping("operate")
-    public BaseResult<List<LogAdmin>> logAdminList(HttpServletRequest httpServletRequest){
+    public BaseResult<List<LogAdmin>> logAdminList(HttpServletRequest httpServletRequest) throws GlobalException {
         String userid ;
         try{
             userid = TokenDecodeUtils.getUserId(httpServletRequest);
         }catch (GlobalException e){
             return BaseResult.fail(e.getCodeMessage());
+        }
+        if(!adminService.isAdmin(Integer.parseInt(userid))){
+            return BaseResult.fail(CodeMessage.NOT_MANAGER);
         }
         List<LogAdmin> logAdmins = logService.logAdminList();
         log.info("用户"+userid+" 查看管理员操作日志");
@@ -55,12 +58,15 @@ public class LogController {
     }
 
     @GetMapping("warn")
-    public BaseResult<List<LogWarn>> logWarnList(HttpServletRequest httpServletRequest){
+    public BaseResult<List<LogWarn>> logWarnList(HttpServletRequest httpServletRequest) throws GlobalException {
         String userid ;
         try{
             userid = TokenDecodeUtils.getUserId(httpServletRequest);
         }catch (GlobalException e){
             return BaseResult.fail(e.getCodeMessage());
+        }
+        if(!adminService.isAdmin(Integer.parseInt(userid))){
+            return BaseResult.fail(CodeMessage.NOT_MANAGER);
         }
         List<LogWarn> logWarns = logService.logWarnList();
         log.info("用户"+userid+" 查看错误日志");

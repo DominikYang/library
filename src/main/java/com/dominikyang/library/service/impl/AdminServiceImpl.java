@@ -67,6 +67,20 @@ public class AdminServiceImpl implements AdminService {
         return roles;
     }
 
+    @Override
+    public boolean isAdmin(Integer userId) throws GlobalException {
+        UserRoleExample example = new UserRoleExample();
+        example.createCriteria().andUserIdEqualTo(userId);
+        List<UserRole> userRoles = userRoleDao.selectByExample(example);
+        if(userRoles.size()<1) {
+            throw new GlobalException(CodeMessage.NOT_MANAGER);
+        }else if(userRoles.get(0).getRoleId()==2){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public String getToken(User user) {
         String token = "";
         token = JWT.create().withAudience(String.valueOf(user.getId()))
