@@ -5,11 +5,13 @@ import com.dominikyang.library.commons.CommonFinalValues;
 import com.dominikyang.library.entity.Book;
 import com.dominikyang.library.entity.LogAdmin;
 import com.dominikyang.library.entity.LogWarn;
+import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.result.BaseResult;
 import com.dominikyang.library.service.BookService;
 import com.dominikyang.library.service.LogService;
 import com.dominikyang.library.service.OrderService;
 import com.dominikyang.library.service.UserService;
+import com.dominikyang.library.utils.TokenDecodeUtils;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +43,12 @@ public class LogController {
 
     @GetMapping("operate")
     public BaseResult<List<LogAdmin>> logAdminList(HttpServletRequest httpServletRequest){
-        String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
+        String userid ;
+        try{
+            userid = TokenDecodeUtils.getUserId(httpServletRequest);
+        }catch (GlobalException e){
+            return BaseResult.fail(e.getCodeMessage());
+        }
         List<LogAdmin> logAdmins = logService.logAdminList();
         log.info("用户"+userid+" 查看管理员操作日志");
         return BaseResult.success(logAdmins);
@@ -49,7 +56,12 @@ public class LogController {
 
     @GetMapping("warn")
     public BaseResult<List<LogWarn>> logWarnList(HttpServletRequest httpServletRequest){
-        String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
+        String userid ;
+        try{
+            userid = TokenDecodeUtils.getUserId(httpServletRequest);
+        }catch (GlobalException e){
+            return BaseResult.fail(e.getCodeMessage());
+        }
         List<LogWarn> logWarns = logService.logWarnList();
         log.info("用户"+userid+" 查看错误日志");
         return BaseResult.success(logWarns);

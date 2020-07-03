@@ -10,6 +10,7 @@ import com.dominikyang.library.result.CodeMessage;
 import com.dominikyang.library.service.BookService;
 import com.dominikyang.library.service.LogService;
 import com.dominikyang.library.service.OrderService;
+import com.dominikyang.library.utils.TokenDecodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,16 +38,21 @@ public class BookManagerController {
 
     @PostMapping("/add")
     public BaseResult<String> addBook(Book book, HttpServletRequest httpServletRequest) throws GlobalException {
-        String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
+        String userId ;
+        try{
+            userId = TokenDecodeUtils.getUserId(httpServletRequest);
+        }catch (GlobalException e){
+            return BaseResult.fail(e.getCodeMessage());
+        }
         boolean success = bookService.addBook(book);
         if (success) {
             LogAdmin logAdmin = new LogAdmin();
             logAdmin.setDetails("添加"+book.getName());
-            logAdmin.setOperateUserId(Integer.parseInt(userid));
+            logAdmin.setOperateUserId(Integer.parseInt(userId));
             logAdmin.setOperateName("添加书籍");
             logAdmin.setTime(new Date());
             logService.addLogAdmin(logAdmin);
-            log.info("用户"+userid+" 添加书籍："+book.getName());
+            log.info("用户"+userId+" 添加书籍："+book.getName());
             return BaseResult.success("添加成功");
         } else {
             LogWarn logWarn = new LogWarn();
@@ -62,7 +68,12 @@ public class BookManagerController {
 
     @PostMapping("/edit")
     public BaseResult<String> editBook(Book book, HttpServletRequest httpServletRequest) throws GlobalException {
-        String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
+        String userid ;
+        try{
+            userid = TokenDecodeUtils.getUserId(httpServletRequest);
+        }catch (GlobalException e){
+            return BaseResult.fail(e.getCodeMessage());
+        }
         boolean success = bookService.editBook(book);
         if (success) {
             LogAdmin logAdmin = new LogAdmin();
@@ -87,7 +98,12 @@ public class BookManagerController {
 
     @PostMapping("/del")
     public BaseResult<String> delBook(Integer id, HttpServletRequest httpServletRequest) throws GlobalException {
-        String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
+        String userid ;
+        try{
+            userid = TokenDecodeUtils.getUserId(httpServletRequest);
+        }catch (GlobalException e){
+            return BaseResult.fail(e.getCodeMessage());
+        }
         boolean success = bookService.delBook(id);
         if (success) {
             LogAdmin logAdmin = new LogAdmin();

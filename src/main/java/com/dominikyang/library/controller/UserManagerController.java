@@ -10,6 +10,7 @@ import com.dominikyang.library.result.BaseResult;
 import com.dominikyang.library.result.CodeMessage;
 import com.dominikyang.library.service.LogService;
 import com.dominikyang.library.service.UserService;
+import com.dominikyang.library.utils.TokenDecodeUtils;
 import com.dominikyang.library.vo.RoleVO;
 import com.dominikyang.library.vo.StateVO;
 import com.dominikyang.library.vo.UserVO;
@@ -47,7 +48,12 @@ public class UserManagerController {
 
     @PostMapping("/add")
     public BaseResult<String> addUser(UserVO userVO, HttpServletRequest httpServletRequest) throws GlobalException {
-        String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
+        String userid ;
+        try{
+            userid = TokenDecodeUtils.getUserId(httpServletRequest);
+        }catch (GlobalException e){
+            return BaseResult.fail(e.getCodeMessage());
+        }
         User user = new User();
         user.setUsername(userVO.getUsername());
         user.setPassword(userVO.getPassword()); //未作加密处理
@@ -80,7 +86,12 @@ public class UserManagerController {
 
     @PostMapping("/edit")
     public BaseResult<String> editUser(UserVO userVO,HttpServletRequest httpServletRequest) throws GlobalException {
-        String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
+        String userid ;
+        try{
+            userid = TokenDecodeUtils.getUserId(httpServletRequest);
+        }catch (GlobalException e){
+            return BaseResult.fail(e.getCodeMessage());
+        }
         User user = new User();
         user.setUsername(userVO.getUsername());
         user.setPassword(userVO.getPassword()); //未作加密处理
@@ -125,7 +136,12 @@ public class UserManagerController {
 
     @PostMapping("/state")
     public BaseResult<String> changeState(StateVO stateVO,HttpServletRequest httpServletRequest) throws GlobalException {
-        String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
+        String userid ;
+        try{
+            userid = TokenDecodeUtils.getUserId(httpServletRequest);
+        }catch (GlobalException e){
+            return BaseResult.fail(e.getCodeMessage());
+        }
         try{
             boolean success = userService.changeState(stateVO);
             if(success){
@@ -161,7 +177,12 @@ public class UserManagerController {
 
     @PostMapping("/role/add")
     public BaseResult<String> addUserRole(RoleVO roleVO,HttpServletRequest httpServletRequest) throws GlobalException {
-        String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
+        String userid ;
+        try{
+            userid = TokenDecodeUtils.getUserId(httpServletRequest);
+        }catch (GlobalException e){
+            return BaseResult.fail(e.getCodeMessage());
+        }
         boolean success = userService.addRole(roleVO);
         if(success){
             LogAdmin logAdmin = new LogAdmin();
@@ -186,7 +207,12 @@ public class UserManagerController {
 
     @PostMapping("/role/del")
     public BaseResult<String> delUserRole(Integer id,HttpServletRequest httpServletRequest) throws GlobalException {
-        String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
+        String userid ;
+        try{
+            userid = TokenDecodeUtils.getUserId(httpServletRequest);
+        }catch (GlobalException e){
+            return BaseResult.fail(e.getCodeMessage());
+        }
         boolean success = userService.delRole(id);
         if(success){
             LogAdmin logAdmin = new LogAdmin();
@@ -211,7 +237,12 @@ public class UserManagerController {
 
     @PostMapping("/role/list")
     public BaseResult<List<UserRole>> listUserRole(Integer userId,HttpServletRequest httpServletRequest) throws GlobalException {
-        String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
+        String userid ;
+        try{
+            userid = TokenDecodeUtils.getUserId(httpServletRequest);
+        }catch (GlobalException e){
+            return BaseResult.fail(e.getCodeMessage());
+        }
         List<UserRole> userRoles = userService.listRole(userId);
         LogAdmin logAdmin = new LogAdmin();
         logAdmin.setDetails("查看角色列表");

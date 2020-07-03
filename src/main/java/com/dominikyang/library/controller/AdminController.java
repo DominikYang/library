@@ -10,6 +10,7 @@ import com.dominikyang.library.result.CodeMessage;
 import com.dominikyang.library.service.AdminService;
 import com.dominikyang.library.service.LogService;
 import com.dominikyang.library.utils.RedisUtils;
+import com.dominikyang.library.utils.TokenDecodeUtils;
 import com.dominikyang.library.vo.LoginVO;
 import com.fasterxml.jackson.databind.ser.Serializers;
 import org.slf4j.Logger;
@@ -64,7 +65,12 @@ public class AdminController {
 
     @GetMapping("/logout")
     public BaseResult<String> logout(HttpServletRequest httpServletRequest) throws GlobalException {
-        String userId = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
+        String userId ;
+        try{
+            userId = TokenDecodeUtils.getUserId(httpServletRequest);
+        }catch (GlobalException e){
+            return BaseResult.fail(e.getCodeMessage());
+        }
         boolean success = RedisUtils.del(userId);
         if(success){
             return BaseResult.success(null);
