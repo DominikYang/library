@@ -8,8 +8,20 @@ import com.alibaba.csp.sentinel.slots.block.BlockException;
  */
 public class ExceptionUtils {
 
-    public String helloException(String hello, BlockException ex){
+    public static String helloException(String hello, BlockException ex) {
         System.out.println("Oops: " + ex.getClass().getCanonicalName());
         return "fail in helloService: " + hello;
+    }
+
+    public static String adminException(String info, BlockException ex) {
+        return "fail in adminService: " + info + " limit";
+    }
+
+    public static String bookException(String info, BlockException ex) {
+        return "fail in bookService: " + info + " limit";
+    }
+
+    public static String logException(String info, BlockException ex) {
+        return "fail in logService: " + info + " limit";
     }
 }

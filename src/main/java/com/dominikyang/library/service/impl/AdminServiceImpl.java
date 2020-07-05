@@ -1,5 +1,6 @@
 package com.dominikyang.library.service.impl;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.dominikyang.library.commons.CommonFinalValues;
@@ -7,6 +8,7 @@ import com.dominikyang.library.dao.RoleDao;
 import com.dominikyang.library.dao.UserDao;
 import com.dominikyang.library.dao.UserRoleDao;
 import com.dominikyang.library.entity.*;
+import com.dominikyang.library.exception.ExceptionUtils;
 import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.result.CodeMessage;
 import com.dominikyang.library.service.AdminService;
@@ -41,6 +43,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @SentinelResource(value = "post",blockHandler = "adminException",blockHandlerClass = {ExceptionUtils.class})
     public String login(LoginVO loginVO) throws GlobalException {
         String token;
         try{
@@ -56,6 +59,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @SentinelResource(value = "get",blockHandler = "adminException",blockHandlerClass = {ExceptionUtils.class})
     public List<Role> getRoles() {
         RoleExample example = new RoleExample();
         example.createCriteria().andIdIsNotNull();
@@ -63,12 +67,15 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @SentinelResource(value = "get",blockHandler = "adminException",blockHandlerClass = {ExceptionUtils.class})
     public boolean isAdmin(Integer userId) throws GlobalException {
         UserRoleExample example = new UserRoleExample();
         example.createCriteria().andUserIdEqualTo(userId);
         List<UserRole> userRoles = userRoleDao.selectByExample(example);
         if(userRoles.size() < 1) {
             throw new GlobalException(CodeMessage.NOT_MANAGER);
-        }else return userRoles.get(0).getRoleId() == CommonFinalValues.ADMIN_ROLE_ID;
+        }else {
+            return userRoles.get(0).getRoleId() == CommonFinalValues.ADMIN_ROLE_ID;
+        }
     }
 }

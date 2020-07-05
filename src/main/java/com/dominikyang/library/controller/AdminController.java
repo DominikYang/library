@@ -8,6 +8,7 @@ import com.dominikyang.library.entity.Role;
 import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.result.BaseResult;
 import com.dominikyang.library.result.CodeMessage;
+import com.dominikyang.library.result.OperatorCode;
 import com.dominikyang.library.service.AdminService;
 import com.dominikyang.library.service.LogService;
 import com.dominikyang.library.utils.RedisUtils;
@@ -92,7 +93,8 @@ public class AdminController {
             LogAdmin logAdmin = new LogAdmin();
             logAdmin.setDetails("查看角色表");
             logAdmin.setOperateUserId(Integer.parseInt(userId));
-            logAdmin.setOperateName("查看角色表");
+            logAdmin.setOperateCode(OperatorCode.GET_ROLES.getCode());
+            logAdmin.setOperateName(OperatorCode.GET_ROLES.getName());
             logAdmin.setTime(new Date());
             logService.addLogAdmin(logAdmin);
             log.info("用户" + userId + " 查看角色表");

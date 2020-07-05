@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class HelloServiceImpl implements HelloService {
 
     @Override
-    @SentinelResource(value = "hello",blockHandler = "helloException",blockHandlerClass = {ExceptionUtils.class},defaultFallback = "defaultFallback")
+    @SentinelResource(value = "hello",blockHandler = "helloException",blockHandlerClass = {ExceptionUtils.class})
     public String hello(String hello) {
         return "hello " + hello;
     }

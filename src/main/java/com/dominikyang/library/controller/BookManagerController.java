@@ -7,6 +7,7 @@ import com.dominikyang.library.entity.LogWarn;
 import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.result.BaseResult;
 import com.dominikyang.library.result.CodeMessage;
+import com.dominikyang.library.result.OperatorCode;
 import com.dominikyang.library.service.AdminService;
 import com.dominikyang.library.service.BookService;
 import com.dominikyang.library.service.LogService;
@@ -53,9 +54,10 @@ public class BookManagerController {
         boolean success = bookService.addBook(book);
         if (success) {
             LogAdmin logAdmin = new LogAdmin();
-            logAdmin.setDetails("添加" + book.getName());
+            logAdmin.setDetails("用户" + userId + " 添加" + book.getName());
             logAdmin.setOperateUserId(Integer.parseInt(userId));
-            logAdmin.setOperateName("添加书籍");
+            logAdmin.setOperateCode(OperatorCode.ADD_BOOK.getCode());
+            logAdmin.setOperateName(OperatorCode.ADD_BOOK.getName());
             logAdmin.setTime(new Date());
             logService.addLogAdmin(logAdmin);
             log.info("用户" + userId + " 添加书籍：" + book.getName());
@@ -86,9 +88,10 @@ public class BookManagerController {
         boolean success = bookService.editBook(book);
         if (success) {
             LogAdmin logAdmin = new LogAdmin();
-            logAdmin.setDetails("编辑" + book.getName());
+            logAdmin.setDetails("用户" + userId + " 编辑" + book.getName());
             logAdmin.setOperateUserId(Integer.parseInt(userId));
-            logAdmin.setOperateName("编辑书籍");
+            logAdmin.setOperateCode(OperatorCode.EDIT_BOOK.getCode());
+            logAdmin.setOperateName(OperatorCode.EDIT_BOOK.getName());
             logAdmin.setTime(new Date());
             logService.addLogAdmin(logAdmin);
             log.info("用户" + userId + " 修改书籍" + book.getName());
@@ -121,7 +124,8 @@ public class BookManagerController {
             LogAdmin logAdmin = new LogAdmin();
             logAdmin.setDetails("删除书籍ID:" + id);
             logAdmin.setOperateUserId(Integer.parseInt(userId));
-            logAdmin.setOperateName("删除书籍");
+            logAdmin.setOperateName(OperatorCode.DEL_BOOK.getName());
+            logAdmin.setOperateCode(OperatorCode.DEL_BOOK.getCode());
             logAdmin.setTime(new Date());
             logService.addLogAdmin(logAdmin);
             log.info("用户" + userId + " 删除书籍:" + id);

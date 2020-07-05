@@ -8,6 +8,7 @@ import com.dominikyang.library.entity.UserRole;
 import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.result.BaseResult;
 import com.dominikyang.library.result.CodeMessage;
+import com.dominikyang.library.result.OperatorCode;
 import com.dominikyang.library.service.AdminService;
 import com.dominikyang.library.service.LogService;
 import com.dominikyang.library.service.UserService;
@@ -74,7 +75,8 @@ public class UserManagerController {
             LogAdmin logAdmin = new LogAdmin();
             logAdmin.setDetails("添加用户:" + userVO.getRealName());
             logAdmin.setOperateUserId(Integer.parseInt(userid));
-            logAdmin.setOperateName("添加用户");
+            logAdmin.setOperateCode(OperatorCode.ADD_USER.getCode());
+            logAdmin.setOperateName(OperatorCode.ADD_USER.getName());
             logAdmin.setTime(new Date());
             logService.addLogAdmin(logAdmin);
             log.info("用户" + userid + " 添加用户:" + userVO.getRealName());
@@ -117,7 +119,8 @@ public class UserManagerController {
                 LogAdmin logAdmin = new LogAdmin();
                 logAdmin.setDetails(" 修改用户:" + userVO.getRealName());
                 logAdmin.setOperateUserId(Integer.parseInt(userid));
-                logAdmin.setOperateName("修改用户信息");
+                logAdmin.setOperateCode(OperatorCode.EDIT_USER.getCode());
+                logAdmin.setOperateName(OperatorCode.EDIT_USER.getName());
                 logAdmin.setTime(new Date());
                 logService.addLogAdmin(logAdmin);
                 log.info("用户" + userid + " 修改用户:" + userVO.getRealName());
@@ -161,7 +164,8 @@ public class UserManagerController {
                 LogAdmin logAdmin = new LogAdmin();
                 logAdmin.setDetails(" 修改用户状态:" + stateVO.getUserId());
                 logAdmin.setOperateUserId(Integer.parseInt(userid));
-                logAdmin.setOperateName("修改用户状态");
+                logAdmin.setOperateCode(OperatorCode.CHANGE_USER_STATE.getCode());
+                logAdmin.setOperateName(OperatorCode.CHANGE_USER_STATE.getName());
                 logAdmin.setTime(new Date());
                 logService.addLogAdmin(logAdmin);
                 log.info("用户" + userid + " 修改用户状态:" + stateVO.getUserId());
@@ -204,7 +208,8 @@ public class UserManagerController {
             LogAdmin logAdmin = new LogAdmin();
             logAdmin.setDetails(" 添加角色：用户-" + roleVO.getUserId() + " 角色-" + roleVO.getRoleId());
             logAdmin.setOperateUserId(Integer.parseInt(userid));
-            logAdmin.setOperateName("添加角色");
+            logAdmin.setOperateCode(OperatorCode.ADD_ROLE.getCode());
+            logAdmin.setOperateName(OperatorCode.ADD_ROLE.getName());
             logAdmin.setTime(new Date());
             logService.addLogAdmin(logAdmin);
             log.info("用户" + userid + " 添加角色：用户-" + roleVO.getUserId() + " 角色-" + roleVO.getRoleId());
@@ -237,7 +242,8 @@ public class UserManagerController {
             LogAdmin logAdmin = new LogAdmin();
             logAdmin.setDetails("删除角色Id：" + id);
             logAdmin.setOperateUserId(Integer.parseInt(userid));
-            logAdmin.setOperateName("删除角色");
+            logAdmin.setOperateCode(OperatorCode.DEL_ROLE.getCode());
+            logAdmin.setOperateName(OperatorCode.DEL_ROLE.getName());
             logAdmin.setTime(new Date());
             logService.addLogAdmin(logAdmin);
             log.info("用户" + userid + " 删除角色" + id);
@@ -269,7 +275,8 @@ public class UserManagerController {
         LogAdmin logAdmin = new LogAdmin();
         logAdmin.setDetails("查看角色列表");
         logAdmin.setOperateUserId(Integer.parseInt(userid));
-        logAdmin.setOperateName("查看角色列表");
+        logAdmin.setOperateCode(OperatorCode.LIST_ROLE.getCode());
+        logAdmin.setOperateName(OperatorCode.LIST_ROLE.getName());
         logAdmin.setTime(new Date());
         logService.addLogAdmin(logAdmin);
         log.info("用户" + userid + " 查看角色列表");

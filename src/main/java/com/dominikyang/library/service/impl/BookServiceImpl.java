@@ -5,6 +5,7 @@ import com.dominikyang.library.commons.CommonFinalValues;
 import com.dominikyang.library.dao.BookDao;
 import com.dominikyang.library.entity.Book;
 import com.dominikyang.library.entity.BookExample;
+import com.dominikyang.library.exception.ExceptionUtils;
 import com.dominikyang.library.service.BookService;
 import com.dominikyang.library.utils.RedisUtils;
 import com.github.pagehelper.PageHelper;
@@ -64,6 +65,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @SentinelResource(value = "post",blockHandler = "bookException",blockHandlerClass = {ExceptionUtils.class})
     public boolean addBook(Book book) {
         try {
             bookDao.insert(book);
@@ -74,6 +76,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @SentinelResource(value = "post",blockHandler = "bookException",blockHandlerClass = {ExceptionUtils.class})
     public boolean editBook(Book book) {
         try {
             bookDao.updateByPrimaryKey(book);
@@ -84,6 +87,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @SentinelResource(value = "post",blockHandler = "bookException",blockHandlerClass = {ExceptionUtils.class})
     public boolean delBook(Integer id) {
         BookExample example = new BookExample();
         example.createCriteria().andIdEqualTo(id);
