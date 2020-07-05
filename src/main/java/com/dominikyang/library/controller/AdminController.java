@@ -50,11 +50,11 @@ public class AdminController {
             redisTemplate.opsForValue().set(userId, login, CommonFinalValues.TOKEN_TIME_OUT);
             return BaseResult.success(login);
         } catch (GlobalException e) {
-            LogWarn logWarn = new LogWarn();
-            logWarn.setTime(new Date());
-            logWarn.setWarnCode(e.getCodeMessage().getCode() + "");
-            logWarn.setWarnName("异常登录请求");
-            logWarn.setDetails(e.getCodeMessage().getMessage());
+            LogWarn logWarn = new LogWarn(
+                    e.getCodeMessage().getCode() + "",
+                    "异常登录请求",
+                    e.getCodeMessage().getMessage(),
+                    new Date());
             logService.addLogWarn(logWarn);
             log.warn(e.getCodeMessage().getMessage());
             return BaseResult.fail(e.getCodeMessage());
@@ -73,11 +73,11 @@ public class AdminController {
         if (success) {
             return BaseResult.success(null);
         } else {
-            LogWarn logWarn = new LogWarn();
-            logWarn.setTime(new Date());
-            logWarn.setWarnCode(CodeMessage.LOGOUT_FAILE.getCode() + "");
-            logWarn.setWarnName("注销删除token失败");
-            logWarn.setDetails(CodeMessage.LOGOUT_FAILE.getMessage());
+            LogWarn logWarn = new LogWarn(
+                    CodeMessage.LOGOUT_FAILE.getCode() + "",
+                    "注销删除token失败",
+                    CodeMessage.LOGOUT_FAILE.getMessage(),
+                    new Date());
             logService.addLogWarn(logWarn);
             log.warn(CodeMessage.LOGOUT_FAILE.getMessage());
             return BaseResult.fail(CodeMessage.LOGOUT_FAILE);
