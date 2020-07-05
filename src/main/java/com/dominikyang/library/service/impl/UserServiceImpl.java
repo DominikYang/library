@@ -2,6 +2,7 @@ package com.dominikyang.library.service.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.dominikyang.library.commons.CommonFinalValues;
 import com.dominikyang.library.dao.BorrowInfoDao;
 import com.dominikyang.library.dao.UserDao;
 import com.dominikyang.library.dao.UserRoleDao;
@@ -29,21 +30,51 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRoleDao userRoleDao;
 
-    @Override
-    public String login(LoginVO loginVO) throws GlobalException {
+
+    private User getUserInfoByUsername(String username) throws GlobalException {
         UserExample example = new UserExample();
-        example.createCriteria().andUsernameEqualTo(loginVO.getUsername());
+        example.createCriteria().andUsernameEqualTo(username);
         List<User> users = userDao.selectByExample(example);
         if (users.size() < 1) {
             throw new GlobalException(CodeMessage.ERROR_USERNAME);
         } else if (users.size() > 1) {
             throw new GlobalException(CodeMessage.DATABSE_ERROR);
+        }else {
+            return users.get(0);
+        }
+    }
+
+    @Override
+    public String login(LoginVO loginVO) throws GlobalException {
+        User user = getUserInfoByUsername(loginVO.getUsername());
+        if (user.getPassword().equals(loginVO.getPassword())) {
+            return getToken(user);
         } else {
-            if (users.get(0).getPassword().equals(loginVO.getPassword())) {
-                return getToken(users.get(0));
-            } else {
-                throw new GlobalException(CodeMessage.ERROR_PASSWORD);
+            throw new GlobalException(CodeMessage.ERROR_PASSWORD);
+        }
+    }
+
+    @Override
+    public String login(LoginVO loginVO, Integer roleId) throws GlobalException {
+        User user = getUserInfoByUsername(loginVO.getUsername());
+        boolean isRoleCorrect = false;
+        UserRoleExample example = new UserRoleExample();
+        example.createCriteria().andUserIdEqualTo(user.getId());
+        List<UserRole> roles = userRoleDao.selectByExample(example);
+        for (UserRole role:roles) {
+            if (role.getRoleId().equals(roleId)) {
+                isRoleCorrect = true;
+                break;
             }
+        }
+        if (user.getPassword().equals(loginVO.getPassword()) && isRoleCorrect) {
+            return getToken(user);
+        }
+        else if(!isRoleCorrect){
+            throw new GlobalException(CodeMessage.ROLE_INCORRECT);
+        }
+        else {
+            throw new GlobalException(CodeMessage.ERROR_PASSWORD);
         }
     }
 

@@ -19,6 +19,15 @@ public class CommonFinalValues {
      * author: Dominikyang <br>
      */
     public static final long TOKEN_TIME_OUT = 86400;
+
+    /*
+     * description: 管理员角色id <br>
+     * version: 1.0 <br>
+     * date: 2020.07.05 14:42 <br>
+     * author: Dominikyang <br>
+     *
+     */
+    public static final int ADMIN_ROLE_ID = 2;
     
     /*
      * description: 图书详情缓存key的前缀 <br>

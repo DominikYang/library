@@ -16,7 +16,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.HttpRequestHandler;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,12 +38,14 @@ public class UserController {
     private final UserService userService;
     private final OrderService orderService;
     private final LogService logService;
+    private final RedisTemplate<String,Object> redisTemplate;
 
     @Autowired
-    public UserController(UserService userService, OrderService orderService, LogService logService) {
+    public UserController(UserService userService, OrderService orderService, LogService logService, RedisTemplate<String, Object> redisTemplate) {
         this.userService = userService;
         this.orderService = orderService;
         this.logService = logService;
+        this.redisTemplate = redisTemplate;
     }
 
     @PostMapping("add")
@@ -59,7 +61,7 @@ public class UserController {
         try {
             String login = userService.login(loginVO);
             String userId = JWT.decode(login).getAudience().get(0);
-            RedisUtils.set(userId, login, CommonFinalValues.TOKEN_TIME_OUT);
+            redisTemplate.opsForValue().set(userId,login,CommonFinalValues.TOKEN_TIME_OUT);
             return BaseResult.success(login);
         } catch (GlobalException e) {
             LogWarn logWarn =
@@ -77,7 +79,7 @@ public class UserController {
     @GetMapping("logout")
     public BaseResult<String> logout(HttpServletRequest httpServletRequest) throws GlobalException {
         String userId = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
-        boolean success = RedisUtils.del(userId);
+        boolean success = redisTemplate.delete(userId);
         if (success) {
             return BaseResult.success(null);
         } else {

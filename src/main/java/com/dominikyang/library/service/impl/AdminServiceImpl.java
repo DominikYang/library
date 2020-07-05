@@ -2,6 +2,7 @@ package com.dominikyang.library.service.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.dominikyang.library.commons.CommonFinalValues;
 import com.dominikyang.library.dao.RoleDao;
 import com.dominikyang.library.dao.UserDao;
 import com.dominikyang.library.dao.UserRoleDao;
@@ -9,6 +10,7 @@ import com.dominikyang.library.entity.*;
 import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.result.CodeMessage;
 import com.dominikyang.library.service.AdminService;
+import com.dominikyang.library.service.UserService;
 import com.dominikyang.library.vo.LoginVO;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,50 +25,41 @@ import java.util.List;
  **/
 @Service
 public class AdminServiceImpl implements AdminService {
+
+    private final UserDao userDao ;
+    private final UserRoleDao userRoleDao;
+    private final RoleDao roleDao;
+    private final UserService userService;
+
+    @SuppressWarnings("all")
     @Autowired
-    private UserDao userDao ;
-    @Autowired
-    private UserRoleDao userRoleDao;
-    @Autowired
-    private RoleDao roleDao;
+    public AdminServiceImpl(UserDao userDao, UserRoleDao userRoleDao, RoleDao roleDao, UserService userService) {
+        this.userDao = userDao;
+        this.userRoleDao = userRoleDao;
+        this.roleDao = roleDao;
+        this.userService = userService;
+    }
 
     @Override
     public String login(LoginVO loginVO) throws GlobalException {
-        boolean isAdmin = false;
-        UserExample example = new UserExample();
-        example.createCriteria().andUsernameEqualTo(loginVO.getUsername());
-        List<User> users = userDao.selectByExample(example);
-        if (users.size() < 1) {
-            throw new GlobalException(CodeMessage.ERROR_USERNAME);
-        } else if (users.size() > 1) {
-            throw new GlobalException(CodeMessage.DATABSE_ERROR);
-            //.equals(loginVO.getPassword())
-        } else if (BCrypt.checkpw(loginVO.getPassword(),users.get(0).getPassword())) {
-            UserRoleExample example1 = new UserRoleExample();
-            example1.createCriteria().andUserIdEqualTo(users.get(0).getId());
-            List<UserRole> roles = userRoleDao.selectByExample(example1);
-            for (UserRole role:roles) {
-                if (role.getRoleId() == 5) {
-                    isAdmin = true;
-                    break;
-                }
+        String token;
+        try{
+             token = userService.login(loginVO, CommonFinalValues.ADMIN_ROLE_ID);
+        }catch (GlobalException e){
+            if(e.getCodeMessage().getCode() == CodeMessage.ROLE_INCORRECT.getCode()){
+                throw new GlobalException(CodeMessage.NOT_MANAGER);
+            }else {
+                throw new GlobalException(e.getCodeMessage());
             }
-        } else {
-            throw new GlobalException(CodeMessage.ERROR_PASSWORD);
         }
-        if(isAdmin){
-            return getToken(users.get(0));
-        }else{
-            throw new GlobalException(CodeMessage.NOT_MANAGER);
-        }
+        return token;
     }
 
     @Override
     public List<Role> getRoles() {
         RoleExample example = new RoleExample();
         example.createCriteria().andIdIsNotNull();
-        List<Role> roles = roleDao.selectByExample(example);
-        return roles;
+        return roleDao.selectByExample(example);
     }
 
     @Override
@@ -74,19 +67,8 @@ public class AdminServiceImpl implements AdminService {
         UserRoleExample example = new UserRoleExample();
         example.createCriteria().andUserIdEqualTo(userId);
         List<UserRole> userRoles = userRoleDao.selectByExample(example);
-        if(userRoles.size()<1) {
+        if(userRoles.size() < 1) {
             throw new GlobalException(CodeMessage.NOT_MANAGER);
-        }else if(userRoles.get(0).getRoleId()==2){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    public String getToken(User user) {
-        String token = "";
-        token = JWT.create().withAudience(String.valueOf(user.getId()))
-                .sign(Algorithm.HMAC256(user.getPassword()));
-        return token;
+        }else return userRoles.get(0).getRoleId() == CommonFinalValues.ADMIN_ROLE_ID;
     }
 }

@@ -19,6 +19,8 @@ import java.util.List;
 public interface UserService {
     String login(LoginVO loginVO) throws GlobalException;
 
+    String login(LoginVO loginVO,Integer roleId) throws GlobalException;
+
     boolean add(User user);
 
     boolean edit(User user) throws GlobalException;
