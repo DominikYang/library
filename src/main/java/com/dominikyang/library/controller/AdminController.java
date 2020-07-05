@@ -18,6 +18,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,11 +34,12 @@ public class AdminController {
 
     private final AdminService adminService;
     private final LogService logService;
+    private RedisTemplate<String,Object> redisTemplate;
 
-    @Autowired
-    public AdminController(AdminService adminService, LogService logService) {
-        this.logService = logService;
+    public AdminController(AdminService adminService, LogService logService, RedisTemplate<String, Object> redisTemplate) {
         this.adminService = adminService;
+        this.logService = logService;
+        this.redisTemplate = redisTemplate;
     }
 
     @PostMapping("/login")
@@ -45,7 +47,7 @@ public class AdminController {
         try {
             String login = adminService.login(loginVO);
             String userId = JWT.decode(login).getAudience().get(0);
-            RedisUtils.set(userId, login, CommonFinalValues.TOKEN_TIME_OUT);
+            redisTemplate.opsForValue().set(userId, login, CommonFinalValues.TOKEN_TIME_OUT);
             return BaseResult.success(login);
         } catch (GlobalException e) {
             LogWarn logWarn = new LogWarn();
