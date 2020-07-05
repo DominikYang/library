@@ -41,24 +41,24 @@ public class BookManagerController {
 
     @PostMapping("/add")
     public BaseResult<String> addBook(Book book, HttpServletRequest httpServletRequest) throws GlobalException {
-        String userId ;
-        try{
+        String userId;
+        try {
             userId = TokenDecodeUtils.getUserId(httpServletRequest);
-        }catch (GlobalException e){
+        } catch (GlobalException e) {
             return BaseResult.fail(e.getCodeMessage());
         }
-        if(!adminService.isAdmin(Integer.parseInt(userId))){
+        if (!adminService.isAdmin(Integer.parseInt(userId))) {
             return BaseResult.fail(CodeMessage.NOT_MANAGER);
         }
         boolean success = bookService.addBook(book);
         if (success) {
             LogAdmin logAdmin = new LogAdmin();
-            logAdmin.setDetails("添加"+book.getName());
+            logAdmin.setDetails("添加" + book.getName());
             logAdmin.setOperateUserId(Integer.parseInt(userId));
             logAdmin.setOperateName("添加书籍");
             logAdmin.setTime(new Date());
             logService.addLogAdmin(logAdmin);
-            log.info("用户"+userId+" 添加书籍："+book.getName());
+            log.info("用户" + userId + " 添加书籍：" + book.getName());
             return BaseResult.success("添加成功");
         } else {
             LogWarn logWarn = new LogWarn();
@@ -74,24 +74,24 @@ public class BookManagerController {
 
     @PostMapping("/edit")
     public BaseResult<String> editBook(Book book, HttpServletRequest httpServletRequest) throws GlobalException {
-        String userid ;
-        try{
-            userid = TokenDecodeUtils.getUserId(httpServletRequest);
-        }catch (GlobalException e){
+        String userId;
+        try {
+            userId = TokenDecodeUtils.getUserId(httpServletRequest);
+        } catch (GlobalException e) {
             return BaseResult.fail(e.getCodeMessage());
         }
-        if(!adminService.isAdmin(Integer.parseInt(userid))){
+        if (!adminService.isAdmin(Integer.parseInt(userId))) {
             return BaseResult.fail(CodeMessage.NOT_MANAGER);
         }
         boolean success = bookService.editBook(book);
         if (success) {
             LogAdmin logAdmin = new LogAdmin();
-            logAdmin.setDetails("编辑"+book.getName());
-            logAdmin.setOperateUserId(Integer.parseInt(userid));
+            logAdmin.setDetails("编辑" + book.getName());
+            logAdmin.setOperateUserId(Integer.parseInt(userId));
             logAdmin.setOperateName("编辑书籍");
             logAdmin.setTime(new Date());
             logService.addLogAdmin(logAdmin);
-            log.info("用户"+userid+" 修改书籍"+book.getName());
+            log.info("用户" + userId + " 修改书籍" + book.getName());
             return BaseResult.success("编辑成功");
         } else {
             LogWarn logWarn = new LogWarn();
@@ -107,24 +107,24 @@ public class BookManagerController {
 
     @PostMapping("/del")
     public BaseResult<String> delBook(Integer id, HttpServletRequest httpServletRequest) throws GlobalException {
-        String userid ;
-        try{
-            userid = TokenDecodeUtils.getUserId(httpServletRequest);
-        }catch (GlobalException e){
+        String userId;
+        try {
+            userId = TokenDecodeUtils.getUserId(httpServletRequest);
+        } catch (GlobalException e) {
             return BaseResult.fail(e.getCodeMessage());
         }
-        if(!adminService.isAdmin(Integer.parseInt(userid))){
+        if (!adminService.isAdmin(Integer.parseInt(userId))) {
             return BaseResult.fail(CodeMessage.NOT_MANAGER);
         }
         boolean success = bookService.delBook(id);
         if (success) {
             LogAdmin logAdmin = new LogAdmin();
-            logAdmin.setDetails("删除书籍ID:"+id);
-            logAdmin.setOperateUserId(Integer.parseInt(userid));
+            logAdmin.setDetails("删除书籍ID:" + id);
+            logAdmin.setOperateUserId(Integer.parseInt(userId));
             logAdmin.setOperateName("删除书籍");
             logAdmin.setTime(new Date());
             logService.addLogAdmin(logAdmin);
-            log.info("用户"+userid+" 删除书籍:"+id);
+            log.info("用户" + userId + " 删除书籍:" + id);
             return BaseResult.success("删除成功");
         } else {
             LogWarn logWarn = new LogWarn();

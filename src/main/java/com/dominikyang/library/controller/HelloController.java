@@ -3,6 +3,7 @@ package com.dominikyang.library.controller;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.dominikyang.library.service.HelloService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class HelloController {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private HelloService helloService;
     /*
      * description: 测试 <br>
      * version: 1.0 <br>
@@ -35,17 +39,16 @@ public class HelloController {
      */
 
     @GetMapping("/{name}")
-    @SentinelResource(value = "hello",blockHandler = "helloExceptionHandler")
     public String hello(@PathVariable String name){
         log.info("hello method called by: {}",name);
         redisTemplate.opsForValue().set("hello","hello " + name);
-        return "hello " + name;
+        return helloService.hello(name);
     }
 
-    public String helloExceptionHandler(String name, BlockException e){
+/*    public String helloExceptionHandler(String name, BlockException e){
         log.info("触发hello方法限流");
         return "hello方法接口流量已达上限，访问被拒绝";
-    }
+    }*/
 
     /**
      * description: 测试redis工作情况 <br>
@@ -60,6 +63,4 @@ public class HelloController {
     public String hello(){
         return Objects.requireNonNull(redisTemplate.opsForValue().get("hello")).toString();
     }
-
-
 }

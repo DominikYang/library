@@ -1,5 +1,6 @@
 package com.dominikyang.library.service.impl;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.dominikyang.library.commons.CommonFinalValues;
 import com.dominikyang.library.dao.BookDao;
 import com.dominikyang.library.entity.Book;

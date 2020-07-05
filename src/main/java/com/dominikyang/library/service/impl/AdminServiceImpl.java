@@ -10,6 +10,7 @@ import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.result.CodeMessage;
 import com.dominikyang.library.service.AdminService;
 import com.dominikyang.library.vo.LoginVO;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +40,8 @@ public class AdminServiceImpl implements AdminService {
             throw new GlobalException(CodeMessage.ERROR_USERNAME);
         } else if (users.size() > 1) {
             throw new GlobalException(CodeMessage.DATABSE_ERROR);
-        } else if (users.get(0).getPassword().equals(loginVO.getPassword())) {
+            //.equals(loginVO.getPassword())
+        } else if (BCrypt.checkpw(loginVO.getPassword(),users.get(0).getPassword())) {
             UserRoleExample example1 = new UserRoleExample();
             example1.createCriteria().andUserIdEqualTo(users.get(0).getId());
             List<UserRole> roles = userRoleDao.selectByExample(example1);

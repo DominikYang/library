@@ -15,7 +15,6 @@ import java.util.List;
 public class LibraryApplication {
 
     public static void main(String[] args) {
-        initFlowRules();
         SpringApplication.run(LibraryApplication.class, args);
     }
 

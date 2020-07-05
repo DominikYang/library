@@ -1,6 +1,7 @@
 package com.dominikyang.library.controller;
 
 import com.auth0.jwt.JWT;
+import com.dominikyang.library.commons.CommonFinalValues;
 import com.dominikyang.library.entity.LogAdmin;
 import com.dominikyang.library.entity.LogWarn;
 import com.dominikyang.library.entity.Role;
@@ -13,6 +14,7 @@ import com.dominikyang.library.utils.RedisUtils;
 import com.dominikyang.library.utils.TokenDecodeUtils;
 import com.dominikyang.library.vo.LoginVO;
 import com.fasterxml.jackson.databind.ser.Serializers;
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,40 +24,34 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
-/**
- * 创建人：肖易安
- * 创建时间：  2020/6/30
- * 注释：null
- **/
 @CrossOrigin(value = "*")
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
     private static final Logger log = LoggerFactory.getLogger(AdminController.class);
 
-    private static long tokenTimeOut = 86400 ;
 
-    private AdminService adminService;
-    private LogService logService;
+    private final AdminService adminService;
+    private final LogService logService;
 
     @Autowired
-    public AdminController(AdminService adminService,LogService logService){
-        this.logService =logService;
+    public AdminController(AdminService adminService, LogService logService) {
+        this.logService = logService;
         this.adminService = adminService;
     }
 
     @PostMapping("/login")
-    public BaseResult<String> login(LoginVO loginVO, HttpServletRequest httpServletRequest) throws GlobalException {
+    public BaseResult<String> login(@RequestBody LoginVO loginVO, HttpServletRequest httpServletRequest) throws GlobalException {
         try {
             String login = adminService.login(loginVO);
             String userId = JWT.decode(login).getAudience().get(0);
-            RedisUtils.set(userId,login,tokenTimeOut);
+            RedisUtils.set(userId, login, CommonFinalValues.TOKEN_TIME_OUT);
             return BaseResult.success(login);
         } catch (GlobalException e) {
             LogWarn logWarn = new LogWarn();
             logWarn.setTime(new Date());
-            logWarn.setWarnCode(e.getCodeMessage().getCode()+"");
-            logWarn.setWarnName("登陆错误");
+            logWarn.setWarnCode(e.getCodeMessage().getCode() + "");
+            logWarn.setWarnName("异常登录请求");
             logWarn.setDetails(e.getCodeMessage().getMessage());
             logService.addLogWarn(logWarn);
             log.warn(e.getCodeMessage().getMessage());
@@ -65,20 +61,20 @@ public class AdminController {
 
     @GetMapping("/logout")
     public BaseResult<String> logout(HttpServletRequest httpServletRequest) throws GlobalException {
-        String userId ;
-        try{
+        String userId;
+        try {
             userId = TokenDecodeUtils.getUserId(httpServletRequest);
-        }catch (GlobalException e){
+        } catch (GlobalException e) {
             return BaseResult.fail(e.getCodeMessage());
         }
         boolean success = RedisUtils.del(userId);
-        if(success){
+        if (success) {
             return BaseResult.success(null);
-        }else{
+        } else {
             LogWarn logWarn = new LogWarn();
             logWarn.setTime(new Date());
-            logWarn.setWarnCode(CodeMessage.LOGOUT_FAILE.getCode()+"");
-            logWarn.setWarnName("注销错误");
+            logWarn.setWarnCode(CodeMessage.LOGOUT_FAILE.getCode() + "");
+            logWarn.setWarnName("注销删除token失败");
             logWarn.setDetails(CodeMessage.LOGOUT_FAILE.getMessage());
             logService.addLogWarn(logWarn);
             log.warn(CodeMessage.LOGOUT_FAILE.getMessage());
@@ -88,18 +84,18 @@ public class AdminController {
 
     @GetMapping("/role/list")
     public BaseResult<List<Role>> roleList(HttpServletRequest httpServletRequest) throws GlobalException {
-        String userid = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
-        if(adminService.isAdmin(Integer.parseInt(userid))){
+        String userId = JWT.decode(httpServletRequest.getHeader("token")).getAudience().get(0);
+        if (adminService.isAdmin(Integer.parseInt(userId))) {
             List<Role> roles = adminService.getRoles();
             LogAdmin logAdmin = new LogAdmin();
             logAdmin.setDetails("查看角色表");
-            logAdmin.setOperateUserId(Integer.parseInt(userid));
+            logAdmin.setOperateUserId(Integer.parseInt(userId));
             logAdmin.setOperateName("查看角色表");
             logAdmin.setTime(new Date());
             logService.addLogAdmin(logAdmin);
-            log.info("用户"+userid+" 查看角色表");
+            log.info("用户" + userId + " 查看角色表");
             return BaseResult.success(roles);
-        }else{
+        } else {
             return BaseResult.fail(CodeMessage.NOT_MANAGER);
         }
 

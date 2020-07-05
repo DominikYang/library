@@ -1,6 +1,7 @@
 package com.dominikyang.library.controller;
 
 import com.auth0.jwt.JWT;
+import com.dominikyang.library.commons.CommonFinalValues;
 import com.dominikyang.library.entity.BorrowInfo;
 import com.dominikyang.library.entity.LogWarn;
 import com.dominikyang.library.exception.GlobalException;
@@ -34,12 +35,9 @@ import java.util.List;
 public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    //token存在时间
-    private static long tokenTimeOut = 86400;
-
-    private UserService userService;
-    private OrderService orderService;
-    private LogService logService;
+    private final UserService userService;
+    private final OrderService orderService;
+    private final LogService logService;
 
     @Autowired
     public UserController(UserService userService, OrderService orderService, LogService logService) {
@@ -57,18 +55,19 @@ public class UserController {
     }
 
     @PostMapping("login")
-    public BaseResult<String> login(LoginVO loginVO, HttpServletRequest httpServletRequest) throws GlobalException {
+    public BaseResult<String> login(LoginVO loginVO) throws GlobalException {
         try {
             String login = userService.login(loginVO);
             String userId = JWT.decode(login).getAudience().get(0);
-            RedisUtils.set(userId, login, tokenTimeOut);
+            RedisUtils.set(userId, login, CommonFinalValues.TOKEN_TIME_OUT);
             return BaseResult.success(login);
         } catch (GlobalException e) {
-            LogWarn logWarn = new LogWarn();
-            logWarn.setTime(new Date());
-            logWarn.setWarnCode(e.getCodeMessage().getCode() + "");
-            logWarn.setWarnName("登陆错误");
-            logWarn.setDetails(e.getCodeMessage().getMessage());
+            LogWarn logWarn =
+                    new LogWarn(
+                            e.getCodeMessage().getCode() + "",
+                            "登陆错误",
+                            e.getCodeMessage().getMessage(),
+                            new Date());
             logService.addLogWarn(logWarn);
             log.warn(e.getCodeMessage().getMessage());
             return BaseResult.fail(e.getCodeMessage());
@@ -82,11 +81,11 @@ public class UserController {
         if (success) {
             return BaseResult.success(null);
         } else {
-            LogWarn logWarn = new LogWarn();
-            logWarn.setTime(new Date());
-            logWarn.setWarnCode(CodeMessage.LOGOUT_FAILE.getCode() + "");
-            logWarn.setWarnName("注销错误");
-            logWarn.setDetails(CodeMessage.LOGOUT_FAILE.getMessage());
+            LogWarn logWarn = new LogWarn(
+                    CodeMessage.LOGOUT_FAILE.getCode() + "",
+                    "注销错误",
+                    CodeMessage.LOGOUT_FAILE.getMessage(),
+                    new Date());
             logService.addLogWarn(logWarn);
             log.warn(CodeMessage.LOGOUT_FAILE.getMessage());
             return BaseResult.fail(CodeMessage.LOGOUT_FAILE);

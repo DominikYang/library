@@ -11,15 +11,20 @@ public class CommonFinalValues {
      * @time: 2020.06.23
      */
     public static final int PAGE_SIZE = 20;
+
+    /*
+     * description: token过期时间 <br>
+     * version: 1.0 <br>
+     * date: 2020.07.05 13:51 <br>
+     * author: Dominikyang <br>
+     */
+    public static final long TOKEN_TIME_OUT = 86400;
     
     /*
      * description: 图书详情缓存key的前缀 <br>
      * version: 1.0 <br>
      * date: 2020.07.01 19:59 <br>
      * author: Dominikyang <br>
-     * 
-     * @param null
-     * @return 
      */ 
     public static final String BOOK_DETAILS =  "BOOK_DETAIL_"; 
 }

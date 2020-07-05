@@ -2,13 +2,18 @@ package com.dominikyang.library.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * log_warn
  * @author 
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LogWarn implements Serializable {
     /**
      * id
@@ -36,4 +41,11 @@ public class LogWarn implements Serializable {
     private Date time;
 
     private static final long serialVersionUID = 1L;
+
+    public LogWarn(String warnCode, String warnName, String details, Date time) {
+        this.warnCode = warnCode;
+        this.warnName = warnName;
+        this.details = details;
+        this.time = time;
+    }
 }
