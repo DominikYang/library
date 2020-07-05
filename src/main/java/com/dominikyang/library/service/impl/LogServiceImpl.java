@@ -31,16 +31,14 @@ public class LogServiceImpl implements LogService {
     public List<LogAdmin> logAdminList() {
         LogAdminExample example = new LogAdminExample();
         example.createCriteria().andIdIsNotNull();
-        List<LogAdmin> logAdmins = logAdminDao.selectByExample(example);
-        return logAdmins;
+        return logAdminDao.selectByExample(example);
     }
 
     @Override
     public List<LogWarn> logWarnList() {
         LogWarnExample example = new LogWarnExample();
         example.createCriteria().andIdIsNotNull();
-        List<LogWarn> logWarns = logWarnDao.selectByExample(example);
-        return logWarns;
+        return logWarnDao.selectByExample(example);
     }
 
     @Override

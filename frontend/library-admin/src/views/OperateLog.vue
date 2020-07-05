@@ -15,13 +15,12 @@
             height="750"
             style="width: 100%">
             <el-table-column
-              prop="date"
+              prop="time"
               label="时间"
-              fixed
             >
             </el-table-column>
             <el-table-column
-              prop="operationName"
+              prop="operateName"
               label="操作名称"
             >
             </el-table-column>
@@ -31,18 +30,9 @@
             >
             </el-table-column>
             <el-table-column
-              prop="method"
-              label="操作方法"
+              prop="details"
+              label="具体操作"
             >
-            </el-table-column>
-            <el-table-column fixed="right" label="详情" width="200">
-              <template slot-scope="scope">
-                <el-button
-                  size="mini"
-                  type="primary"
-                  @click="openEditForm(scope.$index, scope.row)">查看详情
-                </el-button>
-              </template>
             </el-table-column>
           </el-table>
         </el-card>
@@ -69,9 +59,9 @@
         tableData: [{
           id: '',
           date: '',
-          operationName: '',
+          operateName: '',
           operateCode: '',
-          method: ''
+          details: ''
         }]
       }
     },
@@ -82,7 +72,7 @@
           url: Global.httpUrl + 'admin/log/operate',
           headers: {
             'Content-Type': 'application/json',
-            'token': Global.token
+            'token': localStorage.getItem('token')
           }
         }).then(response => {
           console.log(response);

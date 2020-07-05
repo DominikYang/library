@@ -15,18 +15,17 @@
             height="750"
             style="width: 100%">
             <el-table-column
-              prop="date"
+              prop="time"
               label="时间"
-              fixed
             >
             </el-table-column>
             <el-table-column
-              prop="operationName"
+              prop="warnName"
               label="异常名称"
             >
             </el-table-column>
             <el-table-column
-              prop="operateCode"
+              prop="warnCode"
               label="异常代码"
             >
             </el-table-column>
@@ -63,9 +62,9 @@
       return {
         tableData: [{
           id: '',
-          date: '',
-          operationName: '',
-          operateCode: ''
+          time: '',
+          warnName: '',
+          warnCode: ''
         }]
       }
     },
@@ -76,7 +75,7 @@
           url: Global.httpUrl + 'admin/log/warn',
           headers: {
             'Content-Type': 'application/json',
-            'token': Global.token
+            'token': localStorage.getItem('token')
           }
         }).then(response => {
           console.log(response);

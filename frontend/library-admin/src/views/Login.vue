@@ -47,8 +47,8 @@
                 }).then(response => {
                     console.log(response);
                     if (response.data.code === 200) {
-                        Global.setToken(response.data.data.token);
-                        this.$router.push({path: '/home'})
+                        localStorage.setItem('token',response.data.data);
+                        this.$router.push({path: '/book'});
                     }else {
                         this.$message.error(response.data.message);
                     }

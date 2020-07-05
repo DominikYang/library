@@ -14,10 +14,7 @@ import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -27,6 +24,7 @@ import java.util.List;
  * 创建时间：  2020/7/1
  * 注释：null
  **/
+@CrossOrigin(value = "*")
 @RestController
 @RequestMapping("/admin/log")
 public class LogController {
@@ -43,33 +41,33 @@ public class LogController {
 
     @GetMapping("operate")
     public BaseResult<List<LogAdmin>> logAdminList(HttpServletRequest httpServletRequest) throws GlobalException {
-        String userid ;
+        String userId;
         try{
-            userid = TokenDecodeUtils.getUserId(httpServletRequest);
+            userId = TokenDecodeUtils.getUserId(httpServletRequest);
         }catch (GlobalException e){
             return BaseResult.fail(e.getCodeMessage());
         }
-        if(!adminService.isAdmin(Integer.parseInt(userid))){
+        if(!adminService.isAdmin(Integer.parseInt(userId))){
             return BaseResult.fail(CodeMessage.NOT_MANAGER);
         }
         List<LogAdmin> logAdmins = logService.logAdminList();
-        log.info("用户"+userid+" 查看管理员操作日志");
+        log.info("用户" + userId + " 查看管理员操作日志");
         return BaseResult.success(logAdmins);
     }
 
     @GetMapping("warn")
     public BaseResult<List<LogWarn>> logWarnList(HttpServletRequest httpServletRequest) throws GlobalException {
-        String userid ;
+        String userId;
         try{
-            userid = TokenDecodeUtils.getUserId(httpServletRequest);
+            userId = TokenDecodeUtils.getUserId(httpServletRequest);
         }catch (GlobalException e){
             return BaseResult.fail(e.getCodeMessage());
         }
-        if(!adminService.isAdmin(Integer.parseInt(userid))){
+        if(!adminService.isAdmin(Integer.parseInt(userId))){
             return BaseResult.fail(CodeMessage.NOT_MANAGER);
         }
         List<LogWarn> logWarns = logService.logWarnList();
-        log.info("用户"+userid+" 查看错误日志");
+        log.info("用户" + userId + " 查看错误日志");
         return BaseResult.success(logWarns);
     }
 }
