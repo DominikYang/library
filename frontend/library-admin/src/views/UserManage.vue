@@ -43,11 +43,6 @@
                 width="200">
               </el-table-column>
               <el-table-column
-                prop="username"
-                label="用户账号"
-                width="200">
-              </el-table-column>
-              <el-table-column
                 prop="department"
                 label="所属院系"
                 width="200">
@@ -84,7 +79,50 @@
 
   export default {
     name: "UserManage",
-    components: {Navbar}
+    components: {Navbar},
+    data() {
+      return {
+        UserData: [
+          {
+            id: '1',
+            realName: '韦宇阳',
+            username: 'weiyuyang',
+            code: '3170611014',
+            department: '计算机科学与通信工程',
+            major: '物联网工程',
+            grade: '2017'
+          },
+          {
+            id: '1',
+            realName: '韦宇阳',
+            username: 'weiyuyang',
+            code: '3170611014',
+            department: '计算机科学与通信工程',
+            major: '物联网工程',
+            grade: '2017'
+          },
+          {
+            id: '1',
+            realName: '韦宇阳',
+            username: 'weiyuyang',
+            code: '3170611014',
+            department: '计算机科学与通信工程',
+            major: '物联网工程',
+            grade: '2017'
+          },
+          {
+            id: '1',
+            realName: '韦宇阳',
+            username: 'weiyuyang',
+            code: '3170611014',
+            department: '计算机科学与通信工程',
+            major: '物联网工程',
+            grade: '2017'
+          }
+        ]
+
+      }
+    }
   }
 </script>
 
@@ -92,6 +130,7 @@
   .clearfix {
     height: 30px;
   }
+
   .add-button {
     width: 100px;
     height: 40px;

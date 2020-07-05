@@ -61,13 +61,13 @@
     data() {
       return {
         tableData: [{
-          orderId: '',
-          bookId: '',
-          bookName: '',
+          orderId: '202007030000023123',
+          bookId: '1',
+          bookName: '高等数学',
           isbn: '',
-          borrowTime: '',
-          estimateReturnTime: '',
-          state: ''
+          borrowTime: '2020-07-03',
+          estimateReturnTime: '2020-07-19',
+          state: '2'
         }],
       }
     }
