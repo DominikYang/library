@@ -101,6 +101,13 @@
             <artifactId>sentinel-transport-simple-http</artifactId>
             <version>1.7.2</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba.csp/sentinel-web-servlet -->
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-web-servlet</artifactId>
+            <version>1.7.2</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.alibaba.cloud/spring-cloud-starter-alibaba-sentinel -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>

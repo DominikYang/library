@@ -24,7 +24,7 @@ spring:
     port: 6379
     host: 47.107.34.224
   application:
-    name: library2
+    name: library
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.dominikyang.library.entity
