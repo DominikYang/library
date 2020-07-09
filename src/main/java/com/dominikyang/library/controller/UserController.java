@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Wei yuyaung
@@ -61,7 +62,7 @@ public class UserController {
         try {
             String login = userService.login(loginVO);
             String userId = JWT.decode(login).getAudience().get(0);
-            redisTemplate.opsForValue().set(userId,login,CommonFinalValues.TOKEN_TIME_OUT);
+            redisTemplate.opsForValue().set(userId,login,CommonFinalValues.TOKEN_TIME_OUT, TimeUnit.SECONDS);
             return BaseResult.success(login);
         } catch (GlobalException e) {
             LogWarn logWarn =

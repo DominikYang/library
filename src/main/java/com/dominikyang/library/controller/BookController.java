@@ -6,13 +6,17 @@ import com.dominikyang.library.entity.Book;
 import com.dominikyang.library.entity.User;
 import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.result.BaseResult;
+import com.dominikyang.library.result.OperatorCode;
 import com.dominikyang.library.service.BookService;
+import com.dominikyang.library.service.LogService;
 import com.dominikyang.library.service.OrderService;
 import com.dominikyang.library.service.UserService;
+import com.dominikyang.library.utils.VerificationTokenUtils;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,12 +31,20 @@ import java.util.List;
 public class BookController {
     private static final Logger log = LoggerFactory.getLogger(BookController.class);
 
-    @Autowired
     private BookService bookService;
-    @Autowired
     private UserService userService;
-    @Autowired
     private OrderService orderService;
+    private LogService logService;
+    private RedisTemplate<String,Object> redisTemplate;
+
+    @Autowired
+    public BookController(BookService bookService,UserService userService,OrderService orderService,LogService logService,RedisTemplate<String,Object> redisTemplate){
+        this.bookService = bookService;
+        this.userService = userService;
+        this.orderService = orderService;
+        this.logService = logService;
+        this.redisTemplate = redisTemplate;
+    }
 
     @GetMapping("{pageNum}")
     public BaseResult<PageInfo<Book>> bookList(@PathVariable Integer pageNum){
@@ -41,9 +53,14 @@ public class BookController {
     }
 
     @PostMapping("details")
-    public BaseResult<Book> bookDetails(Integer id){
-        Book book = bookService.getBook(id);
-        return BaseResult.success(book);
+    public BaseResult<Book> bookDetails(Integer id, HttpServletRequest httpServletRequest){
+        try{
+            VerificationTokenUtils.redisToHeader(httpServletRequest, OperatorCode.SELECT_BOOK_DETAILS,logService,redisTemplate);
+            Book book = bookService.getBook(id);
+            return BaseResult.success(book);
+        } catch (GlobalException e) {
+            return BaseResult.fail(e.getCodeMessage());
+        }
     }
 
     @PostMapping("search")

@@ -44,7 +44,7 @@ public class AdminController {
     }
 
     @PostMapping("/login")
-    public BaseResult<String> login(@RequestBody LoginVO loginVO, HttpServletRequest httpServletRequest) throws GlobalException {
+    public BaseResult<String> login(LoginVO loginVO, HttpServletRequest httpServletRequest) throws GlobalException {
         try {
             String login = adminService.login(loginVO);
             String userId = JWT.decode(login).getAudience().get(0);

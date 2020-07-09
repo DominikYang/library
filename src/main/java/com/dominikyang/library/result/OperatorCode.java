@@ -25,6 +25,8 @@ public class OperatorCode {
     public static final OperatorCode DEL_ROLE = new OperatorCode("0032","删除角色");
     public static final OperatorCode LIST_ROLE = new OperatorCode("0033","查看角色列表");
 
+    public static final OperatorCode SELECT_BOOK_DETAILS = new OperatorCode("1001","查看图书详情");
+
     private String code;
     private String name;
 }
