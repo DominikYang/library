@@ -45,6 +45,7 @@ public class CodeMessage {
     public static final CodeMessage DEL_ROLE_ERROR = new CodeMessage(3008, "删除角色失败");
     public static final CodeMessage WRING_REQUEST = new CodeMessage(3009,"该请求获取ID失败");
     public static final CodeMessage ROLE_INCORRECT = new CodeMessage(3010, "用户没有该角色权限");
+    public static final CodeMessage USERNAME_REPATE = new CodeMessage(3011,"用户名重复");
 
     public static final CodeMessage CREATE_ORDER_ERROR = new CodeMessage(4001, "创建订单失败");
     public static final CodeMessage ADD_BOOK_FAILE = new CodeMessage(4002, "添加书籍失败");
@@ -52,8 +53,6 @@ public class CodeMessage {
     public static final CodeMessage DEL_BOOK_FAILE = new CodeMessage(4004,"删除书籍失败");
 
     public static final CodeMessage ADD_LOG_ERROR = new CodeMessage(5000,"log插入数据库失败");
-
-
 
     private int code;
     private String message;

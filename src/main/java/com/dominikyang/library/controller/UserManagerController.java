@@ -64,7 +64,7 @@ public class UserManagerController {
         }
         User user = new User();
         user.setUsername(userVO.getUsername());
-        user.setPassword(BCrypt.hashpw(userVO.getPassword(), BCrypt.gensalt())); //未作加密处理
+        user.setPassword(BCrypt.hashpw(userVO.getPassword(), BCrypt.gensalt()));
         user.setCode(userVO.getCode());
         user.setDepartment(userVO.getDepartment());
         user.setGrade(userVO.getGrade());
@@ -106,7 +106,7 @@ public class UserManagerController {
         }
         User user = new User();
         user.setUsername(userVO.getUsername());
-        user.setPassword(userVO.getPassword()); //未作加密处理
+        user.setPassword(BCrypt.hashpw(userVO.getPassword(), BCrypt.gensalt()));
         user.setCode(userVO.getCode());
         user.setDepartment(userVO.getDepartment());
         user.setGrade(userVO.getGrade());

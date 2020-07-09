@@ -13,6 +13,7 @@ import com.dominikyang.library.service.UserService;
 import com.dominikyang.library.vo.LoginVO;
 import com.dominikyang.library.vo.RoleVO;
 import com.dominikyang.library.vo.StateVO;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +48,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String login(LoginVO loginVO) throws GlobalException {
         User user = getUserInfoByUsername(loginVO.getUsername());
-        if (user.getPassword().equals(loginVO.getPassword())) {
+        if (BCrypt.checkpw(loginVO.getPassword(),user.getPassword())) {
             return getToken(user);
         } else {
             throw new GlobalException(CodeMessage.ERROR_PASSWORD);
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService {
                 break;
             }
         }
-        if (user.getPassword().equals(loginVO.getPassword()) && isRoleCorrect) {
+        if (BCrypt.checkpw(loginVO.getPassword(),user.getPassword()) && isRoleCorrect) {
             return getToken(user);
         }
         else if(!isRoleCorrect){
@@ -81,7 +82,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean add(User user) {
         try{
-            userDao.insert(user);
+            UserExample example = new UserExample();
+            example.createCriteria().andUsernameEqualTo(user.getUsername());
+            List<User> users = userDao.selectByExample(example);
+            if(users.size()>1){
+                throw new GlobalException(CodeMessage.DATABSE_ERROR);
+            }else if(users.size()==1){
+                throw new GlobalException(CodeMessage.USERNAME_REPATE);
+            }else{
+                userDao.insert(user);
+                users = userDao.selectByExample(example);
+                UserRole userRole = new UserRole();
+                userRole.setUserId(users.get(0).getId());
+                userRole.setRoleId(1);
+                userRoleDao.insert(userRole);
+            }
             return true;
         }catch (Exception e){
             return false;
