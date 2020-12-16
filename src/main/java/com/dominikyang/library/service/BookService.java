@@ -1,6 +1,7 @@
 package com.dominikyang.library.service;
 
 import com.dominikyang.library.entity.Book;
+import com.dominikyang.library.exception.GlobalException;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface BookService {
 
     List<Book> searchBook(String name);
 
-    boolean addBook(Book book);
+    boolean addBook(Book book) throws GlobalException;
 
     boolean editBook(Book book);
 

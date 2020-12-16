@@ -17,10 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -58,7 +55,7 @@ public class UserController {
     }
 
     @PostMapping("login")
-    public BaseResult<String> login(LoginVO loginVO) throws GlobalException {
+    public BaseResult<String> login(@RequestBody LoginVO loginVO) throws GlobalException {
         try {
             String login = userService.login(loginVO);
             String userId = JWT.decode(login).getAudience().get(0);
@@ -68,7 +65,7 @@ public class UserController {
             LogWarn logWarn =
                     new LogWarn(
                             e.getCodeMessage().getCode() + "",
-                            "登陆错误",
+                            "登录错误",
                             e.getCodeMessage().getMessage(),
                             new Date());
             logService.addLogWarn(logWarn);

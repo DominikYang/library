@@ -2,7 +2,7 @@
   <div class="parent-box">
     <el-card>
       <h1 style="font-size: 20px">登录</h1>
-      <el-form :label-position="left" label-width="80px" :model="formLabelAlign">
+      <el-form label-width="80px" :model="formLabelAlign">
         <el-form-item label="账号">
           <el-input v-model="formLabelAlign.username"></el-input>
         </el-form-item>
@@ -66,17 +66,5 @@
     height: 300px;
   }
 
-  .el-form{
-    position: relative;
-    margin-top: 10%;
-  }
-
-  .el-card{
-    height: 400px;
-  }
-
-  .el-button {
-    width: 100%;
-  }
 
 </style>

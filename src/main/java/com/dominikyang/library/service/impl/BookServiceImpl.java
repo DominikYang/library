@@ -1,13 +1,12 @@
 package com.dominikyang.library.service.impl;
 
-import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.dominikyang.library.commons.CommonFinalValues;
 import com.dominikyang.library.dao.BookDao;
 import com.dominikyang.library.entity.Book;
 import com.dominikyang.library.entity.BookExample;
-import com.dominikyang.library.exception.ExceptionUtils;
+import com.dominikyang.library.exception.GlobalException;
+import com.dominikyang.library.result.CodeMessage;
 import com.dominikyang.library.service.BookService;
-import com.dominikyang.library.utils.RedisUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,21 +64,19 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @SentinelResource(value = "post",blockHandler = "bookException",blockHandlerClass = {ExceptionUtils.class})
-    public boolean addBook(Book book) {
+    public boolean addBook(Book book) throws GlobalException {
         try {
-            bookDao.insert(book);
+            bookDao.insertSelective(book);
             return true;
         } catch (Exception e) {
-            return false;
+            throw new GlobalException(new CodeMessage(500,e.getMessage()));
         }
     }
 
     @Override
-    @SentinelResource(value = "post",blockHandler = "bookException",blockHandlerClass = {ExceptionUtils.class})
     public boolean editBook(Book book) {
         try {
-            bookDao.updateByPrimaryKey(book);
+            bookDao.updateByPrimaryKeySelective(book);
             return true;
         } catch (Exception e) {
             return false;
@@ -87,12 +84,9 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @SentinelResource(value = "post",blockHandler = "bookException",blockHandlerClass = {ExceptionUtils.class})
     public boolean delBook(Integer id) {
-        BookExample example = new BookExample();
-        example.createCriteria().andIdEqualTo(id);
         try {
-            bookDao.deleteByExample(example);
+            bookDao.deleteByPrimaryKey(id);
             return true;
         } catch (Exception e) {
             return false;

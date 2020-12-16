@@ -1,6 +1,5 @@
 package com.dominikyang.library.result;
 
-import javafx.scene.input.KeyCodeCombination;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

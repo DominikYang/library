@@ -26,6 +26,7 @@ import java.util.List;
  * @author Wei yuyaung
  * @date 2020.06.23 23:25
  */
+@CrossOrigin(allowedHeaders = "*")
 @RestController
 @RequestMapping("/book")
 public class BookController {
@@ -52,15 +53,11 @@ public class BookController {
         return BaseResult.success(books);
     }
 
-    @PostMapping("details")
-    public BaseResult<Book> bookDetails(Integer id, HttpServletRequest httpServletRequest){
-        try{
-            VerificationTokenUtils.redisToHeader(httpServletRequest, OperatorCode.SELECT_BOOK_DETAILS,logService,redisTemplate);
-            Book book = bookService.getBook(id);
-            return BaseResult.success(book);
-        } catch (GlobalException e) {
-            return BaseResult.fail(e.getCodeMessage());
-        }
+    @PostMapping("details/{id}")
+    public BaseResult<Book> bookDetails(@PathVariable Integer id, HttpServletRequest httpServletRequest) throws GlobalException {
+        VerificationTokenUtils.redisToHeader(httpServletRequest, OperatorCode.SELECT_BOOK_DETAILS,logService,redisTemplate);
+        Book book = bookService.getBook(id);
+        return BaseResult.success(book);
     }
 
     @PostMapping("search")

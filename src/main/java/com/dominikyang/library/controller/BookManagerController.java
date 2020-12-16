@@ -16,18 +16,17 @@ import com.dominikyang.library.utils.TokenDecodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 /**
- * 创建人：肖易安
+ * 创建人：wyy
  * 创建时间：  2020/6/30
  * 注释：null
  **/
+@CrossOrigin(allowedHeaders = "*")
 @RestController
 @RequestMapping("/admin/book")
 public class BookManagerController {
@@ -41,13 +40,8 @@ public class BookManagerController {
     private AdminService adminService;
 
     @PostMapping("/add")
-    public BaseResult<String> addBook(Book book, HttpServletRequest httpServletRequest) throws GlobalException {
-        String userId;
-        try {
-            userId = TokenDecodeUtils.getUserId(httpServletRequest);
-        } catch (GlobalException e) {
-            return BaseResult.fail(e.getCodeMessage());
-        }
+    public BaseResult<String> addBook(@RequestBody Book book, HttpServletRequest httpServletRequest) throws GlobalException {
+        String userId = TokenDecodeUtils.getUserId(httpServletRequest);
         if (!adminService.isAdmin(Integer.parseInt(userId))) {
             return BaseResult.fail(CodeMessage.NOT_MANAGER);
         }
@@ -75,13 +69,9 @@ public class BookManagerController {
     }
 
     @PostMapping("/edit")
-    public BaseResult<String> editBook(Book book, HttpServletRequest httpServletRequest) throws GlobalException {
+    public BaseResult<String> editBook(@RequestBody Book book, HttpServletRequest httpServletRequest) throws GlobalException {
         String userId;
-        try {
-            userId = TokenDecodeUtils.getUserId(httpServletRequest);
-        } catch (GlobalException e) {
-            return BaseResult.fail(e.getCodeMessage());
-        }
+        userId = TokenDecodeUtils.getUserId(httpServletRequest);
         if (!adminService.isAdmin(Integer.parseInt(userId))) {
             return BaseResult.fail(CodeMessage.NOT_MANAGER);
         }
@@ -108,14 +98,9 @@ public class BookManagerController {
         }
     }
 
-    @PostMapping("/del")
-    public BaseResult<String> delBook(Integer id, HttpServletRequest httpServletRequest) throws GlobalException {
-        String userId;
-        try {
-            userId = TokenDecodeUtils.getUserId(httpServletRequest);
-        } catch (GlobalException e) {
-            return BaseResult.fail(e.getCodeMessage());
-        }
+    @PostMapping("/del/{id}")
+    public BaseResult<String> delBook(@PathVariable Integer id, HttpServletRequest httpServletRequest) throws GlobalException {
+        String userId = TokenDecodeUtils.getUserId(httpServletRequest);
         if (!adminService.isAdmin(Integer.parseInt(userId))) {
             return BaseResult.fail(CodeMessage.NOT_MANAGER);
         }

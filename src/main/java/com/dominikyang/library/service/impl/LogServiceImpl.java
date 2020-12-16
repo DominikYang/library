@@ -11,7 +11,6 @@ import com.dominikyang.library.exception.ExceptionUtils;
 import com.dominikyang.library.exception.GlobalException;
 import com.dominikyang.library.result.CodeMessage;
 import com.dominikyang.library.service.LogService;
-import jdk.nashorn.internal.objects.Global;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

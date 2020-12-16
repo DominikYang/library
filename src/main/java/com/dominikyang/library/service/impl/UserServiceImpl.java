@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
         if (users.size() < 1) {
             throw new GlobalException(CodeMessage.ERROR_USERNAME);
         } else if (users.size() > 1) {
-            throw new GlobalException(CodeMessage.DATABSE_ERROR);
+            throw new GlobalException(CodeMessage.DATABASE_ERROR);
         }else {
             return users.get(0);
         }
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
             example.createCriteria().andUsernameEqualTo(user.getUsername());
             List<User> users = userDao.selectByExample(example);
             if(users.size()>1){
-                throw new GlobalException(CodeMessage.DATABSE_ERROR);
+                throw new GlobalException(CodeMessage.DATABASE_ERROR);
             }else if(users.size()==1){
                 throw new GlobalException(CodeMessage.USERNAME_REPATE);
             }else{
@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
         old.createCriteria().andIdEqualTo(user.getId());
         List<User> users = userDao.selectByExample(old);
         if (users.size() > 1) {
-            throw new GlobalException(CodeMessage.DATABSE_ERROR);
+            throw new GlobalException(CodeMessage.DATABASE_ERROR);
         } else if (users.size() < 1) {
             throw new GlobalException(CodeMessage.HAVE_NOT_USER);
         } else {
@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
         if (users.size() < 1) {
             throw new GlobalException(CodeMessage.HAVE_NOT_USER);
         } else if (users.size() > 1) {
-            throw new GlobalException(CodeMessage.DATABSE_ERROR);
+            throw new GlobalException(CodeMessage.DATABASE_ERROR);
         } else {
             example.clear();
             example.createCriteria().andStateEqualTo(stateVO.getState());
@@ -188,7 +188,7 @@ public class UserServiceImpl implements UserService {
         if (users.size() < 1) {
             throw new GlobalException(CodeMessage.ERROR_USERNAME);
         } else if (users.size() > 1) {
-            throw new GlobalException(CodeMessage.DATABSE_ERROR);
+            throw new GlobalException(CodeMessage.DATABASE_ERROR);
         } else {
             return users.get(0);
         }

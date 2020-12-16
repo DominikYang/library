@@ -30,7 +30,7 @@ public class CodeMessage {
     public static final CodeMessage NO_TOKEN = new CodeMessage(500, "token不存在，请重新登录");
     public static final CodeMessage VERIFY_FAIL = new CodeMessage(501, "token校验失败");
 
-    public static final CodeMessage DATABSE_ERROR = new CodeMessage(1001, "数据库的数据有误");
+    public static final CodeMessage DATABASE_ERROR = new CodeMessage(1001, "数据库的数据有误");
     public static final CodeMessage ERROR_PASSWORD = new CodeMessage(1002, "密码错误");
     public static final CodeMessage ERROR_USERNAME = new CodeMessage(1003, "用户名不存在");
     public static final CodeMessage LOGOUT_FAILE = new CodeMessage(1004, "注销失败");
@@ -43,7 +43,7 @@ public class CodeMessage {
     public static final CodeMessage UPDATE_FAILE = new CodeMessage(3006, "修改用户信息失败");
     public static final CodeMessage ADD_ROLE_ERROR = new CodeMessage(3007, "添加角色失败");
     public static final CodeMessage DEL_ROLE_ERROR = new CodeMessage(3008, "删除角色失败");
-    public static final CodeMessage WRING_REQUEST = new CodeMessage(3009,"该请求获取ID失败");
+    public static final CodeMessage WRING_REQUEST = new CodeMessage(3009,"没有携带token");
     public static final CodeMessage ROLE_INCORRECT = new CodeMessage(3010, "用户没有该角色权限");
     public static final CodeMessage USERNAME_REPATE = new CodeMessage(3011,"用户名重复");
 

@@ -43,7 +43,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    @SentinelResource(value = "post",blockHandler = "adminException",blockHandlerClass = {ExceptionUtils.class})
     public String login(LoginVO loginVO) throws GlobalException {
         String token;
         try{
@@ -59,7 +58,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    @SentinelResource(value = "get",blockHandler = "adminException",blockHandlerClass = {ExceptionUtils.class})
     public List<Role> getRoles() {
         RoleExample example = new RoleExample();
         example.createCriteria().andIdIsNotNull();
@@ -67,7 +65,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    @SentinelResource(value = "get",blockHandler = "adminException",blockHandlerClass = {ExceptionUtils.class})
     public boolean isAdmin(Integer userId) throws GlobalException {
         UserRoleExample example = new UserRoleExample();
         example.createCriteria().andUserIdEqualTo(userId);

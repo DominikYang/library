@@ -9,7 +9,6 @@ import com.dominikyang.library.result.OperatorCode;
 import com.dominikyang.library.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import sun.rmi.runtime.Log;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
